@@ -38,6 +38,8 @@ public slots :
     void slots_RxCallback();
     void slots_errorHandler(QSerialPort::SerialPortError error);
 //    void slots_getRxBuf();
+    quint16 crc16_modbus_calc(quint8 *data, quint32 length);
+    void sendFrame(QByteArray txbuf);
 
 private slots:
     void on_btnRefresh_clicked();
@@ -67,6 +69,17 @@ private slots:
     void on_txt10RegAddr_textChanged(const QString &arg1);
 
     void on_txt10RegNum_textChanged(const QString &arg1);
+
+
+    void on_btnOtherSend_clicked();
+
+    void on_btn03Send_clicked();
+
+    void on_btn04Send_clicked();
+
+    void on_btn06Send_clicked();
+
+    void on_btn10Send_clicked();
 
 private:
     Ui::ModbusTool *ui;

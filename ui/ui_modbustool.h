@@ -17,13 +17,13 @@
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSplitter>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QToolButton>
@@ -37,35 +37,35 @@ public:
     QAction *actionModbusPro;
     QAction *actionHelp;
     QWidget *centralWidget;
-    QHBoxLayout *horizontalLayout;
+    QGridLayout *gridLayout_6;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_5;
     QTextEdit *txtMessage;
     QGroupBox *groupBox_8;
     QGridLayout *gridLayout_4;
-    QPushButton *btn03Send;
     QGridLayout *gridLayout_2;
-    QLabel *label;
-    QLabel *label_2;
     QLabel *label_3;
     QLineEdit *txt03SlaveAddr;
-    QLineEdit *txt03RegAddr;
-    QLineEdit *txt03RegNum;
-    QLabel *label_4;
+    QLabel *label;
+    QLabel *label_2;
     QLabel *label_8;
     QLabel *label_7;
+    QLineEdit *txt03RegNum;
+    QLineEdit *txt03RegAddr;
+    QLabel *label_4;
     QLineEdit *txt04SlaveAddr;
-    QLineEdit *txt04RegAddr;
-    QLineEdit *txt04RegNum;
-    QLabel *label_9;
     QLabel *label_11;
-    QLabel *label_12;
-    QLineEdit *txt06SlaveAddr;
+    QLineEdit *txt04RegAddr;
+    QLabel *label_9;
+    QLineEdit *txt04RegNum;
     QLineEdit *txt06RegAddr;
+    QLabel *label_12;
     QLineEdit *txt06Value;
+    QLineEdit *txt06SlaveAddr;
     QPushButton *btn04Send;
     QPushButton *btn06Send;
     QPushButton *btn10Send;
+    QLineEdit *txtOtherValue;
     QGridLayout *gridLayout_3;
     QLabel *label_13;
     QLabel *label_15;
@@ -76,18 +76,19 @@ public:
     QLineEdit *txt10RegNum;
     QLineEdit *txt10Value;
     QPushButton *btnOtherSend;
-    QLineEdit *txtOtherValue;
+    QPushButton *btn03Send;
     QGroupBox *groupBox_2;
-    QCheckBox *checkBox;
-    QRadioButton *robMaster;
-    QRadioButton *robSlaver;
-    QToolButton *btnSubtract;
-    QToolButton *btnPlus;
+    QCheckBox *ckbInsertCRC;
+    QRadioButton *rdbRTU;
+    QRadioButton *rdbASCII;
+    QSplitter *splitter;
     QPushButton *btnExpand;
+    QToolButton *btnPlus;
+    QToolButton *btnSubtract;
     QGroupBox *QGBSerialConfig;
     QPushButton *btnOpenPort;
     QPushButton *btnRefresh;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QGridLayout *gridLayout;
     QLabel *lblPortNum;
     QComboBox *cbbPortNum;
@@ -113,10 +114,10 @@ public:
         actionHelp->setObjectName(QStringLiteral("actionHelp"));
         centralWidget = new QWidget(ModbusTool);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        horizontalLayout = new QHBoxLayout(centralWidget);
-        horizontalLayout->setSpacing(6);
-        horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        gridLayout_6 = new QGridLayout(centralWidget);
+        gridLayout_6->setSpacing(6);
+        gridLayout_6->setContentsMargins(11, 11, 11, 11);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
         groupBox = new QGroupBox(centralWidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -148,24 +149,9 @@ public:
         gridLayout_4->setSpacing(6);
         gridLayout_4->setContentsMargins(11, 11, 11, 11);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        btn03Send = new QPushButton(groupBox_8);
-        btn03Send->setObjectName(QStringLiteral("btn03Send"));
-
-        gridLayout_4->addWidget(btn03Send, 0, 0, 1, 1);
-
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setSpacing(6);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        label = new QLabel(groupBox_8);
-        label->setObjectName(QStringLiteral("label"));
-
-        gridLayout_2->addWidget(label, 0, 0, 1, 1);
-
-        label_2 = new QLabel(groupBox_8);
-        label_2->setObjectName(QStringLiteral("label_2"));
-
-        gridLayout_2->addWidget(label_2, 0, 1, 1, 1);
-
         label_3 = new QLabel(groupBox_8);
         label_3->setObjectName(QStringLiteral("label_3"));
 
@@ -176,20 +162,15 @@ public:
 
         gridLayout_2->addWidget(txt03SlaveAddr, 1, 0, 1, 1);
 
-        txt03RegAddr = new QLineEdit(groupBox_8);
-        txt03RegAddr->setObjectName(QStringLiteral("txt03RegAddr"));
+        label = new QLabel(groupBox_8);
+        label->setObjectName(QStringLiteral("label"));
 
-        gridLayout_2->addWidget(txt03RegAddr, 1, 1, 1, 1);
+        gridLayout_2->addWidget(label, 0, 0, 1, 1);
 
-        txt03RegNum = new QLineEdit(groupBox_8);
-        txt03RegNum->setObjectName(QStringLiteral("txt03RegNum"));
+        label_2 = new QLabel(groupBox_8);
+        label_2->setObjectName(QStringLiteral("label_2"));
 
-        gridLayout_2->addWidget(txt03RegNum, 1, 2, 1, 1);
-
-        label_4 = new QLabel(groupBox_8);
-        label_4->setObjectName(QStringLiteral("label_4"));
-
-        gridLayout_2->addWidget(label_4, 2, 0, 1, 1);
+        gridLayout_2->addWidget(label_2, 0, 1, 1, 1);
 
         label_8 = new QLabel(groupBox_8);
         label_8->setObjectName(QStringLiteral("label_8"));
@@ -201,50 +182,65 @@ public:
 
         gridLayout_2->addWidget(label_7, 2, 2, 1, 1);
 
+        txt03RegNum = new QLineEdit(groupBox_8);
+        txt03RegNum->setObjectName(QStringLiteral("txt03RegNum"));
+
+        gridLayout_2->addWidget(txt03RegNum, 1, 2, 1, 1);
+
+        txt03RegAddr = new QLineEdit(groupBox_8);
+        txt03RegAddr->setObjectName(QStringLiteral("txt03RegAddr"));
+
+        gridLayout_2->addWidget(txt03RegAddr, 1, 1, 1, 1);
+
+        label_4 = new QLabel(groupBox_8);
+        label_4->setObjectName(QStringLiteral("label_4"));
+
+        gridLayout_2->addWidget(label_4, 2, 0, 1, 1);
+
         txt04SlaveAddr = new QLineEdit(groupBox_8);
         txt04SlaveAddr->setObjectName(QStringLiteral("txt04SlaveAddr"));
 
         gridLayout_2->addWidget(txt04SlaveAddr, 3, 0, 1, 1);
-
-        txt04RegAddr = new QLineEdit(groupBox_8);
-        txt04RegAddr->setObjectName(QStringLiteral("txt04RegAddr"));
-
-        gridLayout_2->addWidget(txt04RegAddr, 3, 1, 1, 1);
-
-        txt04RegNum = new QLineEdit(groupBox_8);
-        txt04RegNum->setObjectName(QStringLiteral("txt04RegNum"));
-
-        gridLayout_2->addWidget(txt04RegNum, 3, 2, 1, 1);
-
-        label_9 = new QLabel(groupBox_8);
-        label_9->setObjectName(QStringLiteral("label_9"));
-
-        gridLayout_2->addWidget(label_9, 4, 0, 1, 1);
 
         label_11 = new QLabel(groupBox_8);
         label_11->setObjectName(QStringLiteral("label_11"));
 
         gridLayout_2->addWidget(label_11, 4, 1, 1, 1);
 
-        label_12 = new QLabel(groupBox_8);
-        label_12->setObjectName(QStringLiteral("label_12"));
+        txt04RegAddr = new QLineEdit(groupBox_8);
+        txt04RegAddr->setObjectName(QStringLiteral("txt04RegAddr"));
 
-        gridLayout_2->addWidget(label_12, 4, 2, 1, 1);
+        gridLayout_2->addWidget(txt04RegAddr, 3, 1, 1, 1);
 
-        txt06SlaveAddr = new QLineEdit(groupBox_8);
-        txt06SlaveAddr->setObjectName(QStringLiteral("txt06SlaveAddr"));
+        label_9 = new QLabel(groupBox_8);
+        label_9->setObjectName(QStringLiteral("label_9"));
 
-        gridLayout_2->addWidget(txt06SlaveAddr, 5, 0, 1, 1);
+        gridLayout_2->addWidget(label_9, 4, 0, 1, 1);
+
+        txt04RegNum = new QLineEdit(groupBox_8);
+        txt04RegNum->setObjectName(QStringLiteral("txt04RegNum"));
+
+        gridLayout_2->addWidget(txt04RegNum, 3, 2, 1, 1);
 
         txt06RegAddr = new QLineEdit(groupBox_8);
         txt06RegAddr->setObjectName(QStringLiteral("txt06RegAddr"));
 
         gridLayout_2->addWidget(txt06RegAddr, 5, 1, 1, 1);
 
+        label_12 = new QLabel(groupBox_8);
+        label_12->setObjectName(QStringLiteral("label_12"));
+
+        gridLayout_2->addWidget(label_12, 4, 2, 1, 1);
+
         txt06Value = new QLineEdit(groupBox_8);
         txt06Value->setObjectName(QStringLiteral("txt06Value"));
 
         gridLayout_2->addWidget(txt06Value, 5, 2, 1, 1);
+
+        txt06SlaveAddr = new QLineEdit(groupBox_8);
+        txt06SlaveAddr->setObjectName(QStringLiteral("txt06SlaveAddr"));
+
+        gridLayout_2->addWidget(txt06SlaveAddr, 5, 0, 1, 1);
 
 
         gridLayout_4->addLayout(gridLayout_2, 0, 1, 3, 1);
@@ -263,6 +259,11 @@ public:
         btn10Send->setObjectName(QStringLiteral("btn10Send"));
 
         gridLayout_4->addWidget(btn10Send, 3, 0, 1, 1);
+
+        txtOtherValue = new QLineEdit(groupBox_8);
+        txtOtherValue->setObjectName(QStringLiteral("txtOtherValue"));
+
+        gridLayout_4->addWidget(txtOtherValue, 4, 1, 1, 1);
 
         gridLayout_3 = new QGridLayout();
         gridLayout_3->setSpacing(6);
@@ -319,35 +320,17 @@ public:
 
         gridLayout_4->addWidget(btnOtherSend, 4, 0, 1, 1);
 
-        txtOtherValue = new QLineEdit(groupBox_8);
-        txtOtherValue->setObjectName(QStringLiteral("txtOtherValue"));
+        btn03Send = new QPushButton(groupBox_8);
+        btn03Send->setObjectName(QStringLiteral("btn03Send"));
 
-        gridLayout_4->addWidget(txtOtherValue, 4, 1, 1, 1);
+        gridLayout_4->addWidget(btn03Send, 0, 0, 1, 1);
 
+        btnOtherSend->raise();
+        txtOtherValue->raise();
         btn10Send->raise();
-        txt06Value->raise();
-        txt06RegAddr->raise();
-        txt06SlaveAddr->raise();
         btn06Send->raise();
-        label_9->raise();
-        label_11->raise();
-        label_12->raise();
-        label_9->raise();
-        label_11->raise();
-        txt04RegNum->raise();
         btn04Send->raise();
-        txt04RegAddr->raise();
-        txt04SlaveAddr->raise();
-        label_7->raise();
-        label_4->raise();
-        label_8->raise();
-        txt03RegNum->raise();
-        txt03SlaveAddr->raise();
         btn03Send->raise();
-        txt03RegAddr->raise();
-        label_3->raise();
-        label->raise();
-        label_2->raise();
 
         gridLayout_5->addWidget(groupBox_8, 0, 1, 2, 1);
 
@@ -357,30 +340,34 @@ public:
         groupBox_2->setSizePolicy(sizePolicy);
         groupBox_2->setMinimumSize(QSize(0, 0));
         groupBox_2->setMaximumSize(QSize(16777215, 16777215));
-        checkBox = new QCheckBox(groupBox_2);
-        checkBox->setObjectName(QStringLiteral("checkBox"));
-        checkBox->setGeometry(QRect(10, 57, 91, 18));
-        checkBox->setChecked(true);
-        robMaster = new QRadioButton(groupBox_2);
+        ckbInsertCRC = new QCheckBox(groupBox_2);
+        ckbInsertCRC->setObjectName(QStringLiteral("ckbInsertCRC"));
+        ckbInsertCRC->setGeometry(QRect(10, 57, 141, 18));
+        ckbInsertCRC->setChecked(true);
+        rdbRTU = new QRadioButton(groupBox_2);
         bgpMSS = new QButtonGroup(ModbusTool);
         bgpMSS->setObjectName(QStringLiteral("bgpMSS"));
-        bgpMSS->addButton(robMaster);
-        robMaster->setObjectName(QStringLiteral("robMaster"));
-        robMaster->setGeometry(QRect(10, 81, 43, 18));
-        robMaster->setChecked(true);
-        robSlaver = new QRadioButton(groupBox_2);
-        bgpMSS->addButton(robSlaver);
-        robSlaver->setObjectName(QStringLiteral("robSlaver"));
-        robSlaver->setGeometry(QRect(10, 105, 55, 18));
-        btnSubtract = new QToolButton(groupBox_2);
-        btnSubtract->setObjectName(QStringLiteral("btnSubtract"));
-        btnSubtract->setGeometry(QRect(118, 29, 26, 19));
-        btnPlus = new QToolButton(groupBox_2);
-        btnPlus->setObjectName(QStringLiteral("btnPlus"));
-        btnPlus->setGeometry(QRect(88, 29, 26, 19));
-        btnExpand = new QPushButton(groupBox_2);
+        bgpMSS->addButton(rdbRTU);
+        rdbRTU->setObjectName(QStringLiteral("rdbRTU"));
+        rdbRTU->setGeometry(QRect(10, 81, 43, 18));
+        rdbRTU->setChecked(true);
+        rdbASCII = new QRadioButton(groupBox_2);
+        bgpMSS->addButton(rdbASCII);
+        rdbASCII->setObjectName(QStringLiteral("rdbASCII"));
+        rdbASCII->setGeometry(QRect(10, 105, 55, 18));
+        splitter = new QSplitter(groupBox_2);
+        splitter->setObjectName(QStringLiteral("splitter"));
+        splitter->setGeometry(QRect(12, 29, 141, 20));
+        splitter->setOrientation(Qt::Horizontal);
+        btnExpand = new QPushButton(splitter);
         btnExpand->setObjectName(QStringLiteral("btnExpand"));
-        btnExpand->setGeometry(QRect(12, 29, 72, 20));
+        splitter->addWidget(btnExpand);
+        btnPlus = new QToolButton(splitter);
+        btnPlus->setObjectName(QStringLiteral("btnPlus"));
+        splitter->addWidget(btnPlus);
+        btnSubtract = new QToolButton(splitter);
+        btnSubtract->setObjectName(QStringLiteral("btnSubtract"));
+        splitter->addWidget(btnSubtract);
 
         gridLayout_5->addWidget(groupBox_2, 1, 0, 2, 1);
 
@@ -416,20 +403,20 @@ public:
         QIcon icon1;
         icon1.addFile(QStringLiteral(":/action/action/reload.png"), QSize(), QIcon::Normal, QIcon::Off);
         btnRefresh->setIcon(icon1);
-        widget = new QWidget(QGBSerialConfig);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setGeometry(QRect(11, 21, 146, 136));
-        gridLayout = new QGridLayout(widget);
+        layoutWidget = new QWidget(QGBSerialConfig);
+        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
+        layoutWidget->setGeometry(QRect(11, 21, 146, 136));
+        gridLayout = new QGridLayout(layoutWidget);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
-        lblPortNum = new QLabel(widget);
+        lblPortNum = new QLabel(layoutWidget);
         lblPortNum->setObjectName(QStringLiteral("lblPortNum"));
 
         gridLayout->addWidget(lblPortNum, 0, 0, 1, 1);
 
-        cbbPortNum = new QComboBox(widget);
+        cbbPortNum = new QComboBox(layoutWidget);
         cbbPortNum->setObjectName(QStringLiteral("cbbPortNum"));
         QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
         sizePolicy2.setHorizontalStretch(0);
@@ -442,45 +429,45 @@ public:
 
         gridLayout->addWidget(cbbPortNum, 0, 1, 1, 1);
 
-        lblBaudRate = new QLabel(widget);
+        lblBaudRate = new QLabel(layoutWidget);
         lblBaudRate->setObjectName(QStringLiteral("lblBaudRate"));
 
         gridLayout->addWidget(lblBaudRate, 1, 0, 1, 1);
 
-        cbbBaud = new QComboBox(widget);
+        cbbBaud = new QComboBox(layoutWidget);
         cbbBaud->setObjectName(QStringLiteral("cbbBaud"));
         cbbBaud->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
         gridLayout->addWidget(cbbBaud, 1, 1, 1, 1);
 
-        lblDataBit = new QLabel(widget);
+        lblDataBit = new QLabel(layoutWidget);
         lblDataBit->setObjectName(QStringLiteral("lblDataBit"));
 
         gridLayout->addWidget(lblDataBit, 2, 0, 1, 1);
 
-        cbbDataBit = new QComboBox(widget);
+        cbbDataBit = new QComboBox(layoutWidget);
         cbbDataBit->setObjectName(QStringLiteral("cbbDataBit"));
         cbbDataBit->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
         gridLayout->addWidget(cbbDataBit, 2, 1, 1, 1);
 
-        lblVerify = new QLabel(widget);
+        lblVerify = new QLabel(layoutWidget);
         lblVerify->setObjectName(QStringLiteral("lblVerify"));
 
         gridLayout->addWidget(lblVerify, 3, 0, 1, 1);
 
-        cbbVerify = new QComboBox(widget);
+        cbbVerify = new QComboBox(layoutWidget);
         cbbVerify->setObjectName(QStringLiteral("cbbVerify"));
         cbbVerify->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
         gridLayout->addWidget(cbbVerify, 3, 1, 1, 1);
 
-        lblStopBit = new QLabel(widget);
+        lblStopBit = new QLabel(layoutWidget);
         lblStopBit->setObjectName(QStringLiteral("lblStopBit"));
 
         gridLayout->addWidget(lblStopBit, 4, 0, 1, 1);
 
-        cbbStopBit = new QComboBox(widget);
+        cbbStopBit = new QComboBox(layoutWidget);
         cbbStopBit->setObjectName(QStringLiteral("cbbStopBit"));
         cbbStopBit->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
@@ -492,11 +479,9 @@ public:
         groupBox_8->raise();
         QGBSerialConfig->raise();
         groupBox_2->raise();
-        txtOtherValue->raise();
-        btnOtherSend->raise();
         txtMessage->raise();
 
-        horizontalLayout->addWidget(groupBox);
+        gridLayout_6->addWidget(groupBox, 0, 0, 1, 1);
 
         ModbusTool->setCentralWidget(centralWidget);
         toolBar = new QToolBar(ModbusTool);
@@ -511,10 +496,10 @@ public:
         QWidget::setTabOrder(btnOpenPort, btnExpand);
         QWidget::setTabOrder(btnExpand, btnPlus);
         QWidget::setTabOrder(btnPlus, btnSubtract);
-        QWidget::setTabOrder(btnSubtract, checkBox);
-        QWidget::setTabOrder(checkBox, robMaster);
-        QWidget::setTabOrder(robMaster, robSlaver);
-        QWidget::setTabOrder(robSlaver, txt10SlaveAddr);
+        QWidget::setTabOrder(btnSubtract, ckbInsertCRC);
+        QWidget::setTabOrder(ckbInsertCRC, rdbRTU);
+        QWidget::setTabOrder(rdbRTU, rdbASCII);
+        QWidget::setTabOrder(rdbASCII, txt10SlaveAddr);
         QWidget::setTabOrder(txt10SlaveAddr, txt10RegAddr);
         QWidget::setTabOrder(txt10RegAddr, txt10RegNum);
         QWidget::setTabOrder(txt10RegNum, txt10Value);
@@ -538,15 +523,14 @@ public:
         actionHelp->setText(QApplication::translate("ModbusTool", "\345\270\256\345\212\251\350\257\264\346\230\216", Q_NULLPTR));
         groupBox->setTitle(QString());
         groupBox_8->setTitle(QApplication::translate("ModbusTool", "\345\270\270\347\224\250\346\214\207\344\273\244", Q_NULLPTR));
-        btn03Send->setText(QApplication::translate("ModbusTool", "03H", Q_NULLPTR));
+        label_3->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
         label->setText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
         label_2->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
-        label_3->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
-        label_4->setText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
         label_8->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
         label_7->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
-        label_9->setText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
+        label_4->setText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
         label_11->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
+        label_9->setText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
         label_12->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\200\274", Q_NULLPTR));
         btn04Send->setText(QApplication::translate("ModbusTool", "04H", Q_NULLPTR));
         btn06Send->setText(QApplication::translate("ModbusTool", "06H", Q_NULLPTR));
@@ -556,13 +540,14 @@ public:
         label_16->setText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
         label_14->setText(QApplication::translate("ModbusTool", "\346\225\260\346\215\256\345\200\274", Q_NULLPTR));
         btnOtherSend->setText(QApplication::translate("ModbusTool", "\345\205\266\344\273\226\346\214\207\344\273\244", Q_NULLPTR));
+        btn03Send->setText(QApplication::translate("ModbusTool", "03H", Q_NULLPTR));
         groupBox_2->setTitle(QApplication::translate("ModbusTool", "Config", Q_NULLPTR));
-        checkBox->setText(QApplication::translate("ModbusTool", "\345\270\246CRC\346\240\241\351\252\214\347\240\201", Q_NULLPTR));
-        robMaster->setText(QApplication::translate("ModbusTool", "RTU", Q_NULLPTR));
-        robSlaver->setText(QApplication::translate("ModbusTool", "ASCII", Q_NULLPTR));
-        btnSubtract->setText(QApplication::translate("ModbusTool", "-", Q_NULLPTR));
-        btnPlus->setText(QApplication::translate("ModbusTool", "+", Q_NULLPTR));
+        ckbInsertCRC->setText(QApplication::translate("ModbusTool", "\350\207\252\345\212\250\346\267\273\345\212\240\346\240\241\351\252\214\347\240\201", Q_NULLPTR));
+        rdbRTU->setText(QApplication::translate("ModbusTool", "RTU", Q_NULLPTR));
+        rdbASCII->setText(QApplication::translate("ModbusTool", "ASCII", Q_NULLPTR));
         btnExpand->setText(QApplication::translate("ModbusTool", "\346\250\241\346\213\237\350\256\276\345\244\207", Q_NULLPTR));
+        btnPlus->setText(QApplication::translate("ModbusTool", "+", Q_NULLPTR));
+        btnSubtract->setText(QApplication::translate("ModbusTool", "-", Q_NULLPTR));
         QGBSerialConfig->setTitle(QApplication::translate("ModbusTool", "\344\270\262\345\217\243\350\256\276\347\275\256", Q_NULLPTR));
         btnOpenPort->setText(QApplication::translate("ModbusTool", "\346\211\223\345\274\200\344\270\262\345\217\243", Q_NULLPTR));
 #ifndef QT_NO_TOOLTIP
