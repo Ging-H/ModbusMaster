@@ -21,6 +21,16 @@ public:
     explicit ModbusTool(QWidget *parent = 0);
     ~ModbusTool();
 
+    /* 接收数据帧 */
+    struct {
+        quint8 slaveAddr; // 从设备地址
+        quint8 cmd;       // 指令
+        quint16 regAddr;  // 寄存器地址
+        quint16 regNum;   // 寄存器数量
+        quint8  byteNum;  // 字节数
+        quint8  data[256];// 数据
+        quint16  CRC; // 校验码
+    }rxFrame;
     QByteArray rxDataBuf;
     qint8 txSlaveAddr;
     qint8 txRegAddr;

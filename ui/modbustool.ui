@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
+    <width>583</width>
     <height>487</height>
    </rect>
   </property>
@@ -389,6 +389,19 @@
            </property>
           </widget>
          </widget>
+         <widget class="QToolButton" name="toolButton">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>130</y>
+            <width>46</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>清空</string>
+          </property>
+         </widget>
         </widget>
        </item>
        <item row="0" column="0">
@@ -636,7 +649,24 @@
   <tabstop>btn10Send</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>toolButton</sender>
+   <signal>clicked()</signal>
+   <receiver>txtMessage</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>420</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <buttongroups>
   <buttongroup name="bgpMSS"/>
  </buttongroups>

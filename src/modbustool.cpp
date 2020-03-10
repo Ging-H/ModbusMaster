@@ -107,6 +107,7 @@ void ModbusTool::slots_RxCallback()
 {
     QByteArray tmp = currentPort->readAll();
     rxDataBuf.append(tmp);
+
 }
 /*----------------------------------------------------------------------*/
 /* 设定QLineEdit的编辑事件,限制输入长度,超过这个长度就自动跳转到下一个QLineEdit */
@@ -317,6 +318,9 @@ void ModbusTool::on_txt10RegNum_textChanged(const QString &arg1)
 void ModbusTool::on_btnOtherSend_clicked()
 {
     QString tmp = ui->txtOtherValue->text();
+    if(tmp.isEmpty()){
+        return ;
+    }
     tmp.remove(QRegExp ("\\s")); // delete space
     QByteArray txbuf = QByteArray::fromHex(tmp.toLocal8Bit());
     this->sendFrame(txbuf);
@@ -326,10 +330,26 @@ void ModbusTool::on_btnOtherSend_clicked()
  */
 void ModbusTool::on_btn03Send_clicked()
 {
-    QString tmp = ui->txt03SlaveAddr->text() + ui->txt03RegAddr->text() + ui->txt03RegNum->text();
-    tmp.remove(QRegExp ("\\s")); // delete space
-    QByteArray txbuf = QByteArray::fromHex(tmp.toLocal8Bit());;
-    txbuf.insert(1,0x03);       // insert cmd 0x03
+    if(!currentPort->isOpen()) return ;
+    QString strSlaverAddr = ui->txt03SlaveAddr->text();
+    QString strRegAddr = ui->txt03RegAddr->text();
+    QString strRegNum = ui->txt03RegNum->text();
+
+    if(strSlaverAddr.isEmpty()) return ;
+    if(strRegAddr.isEmpty())    return ;
+    if(strRegNum.isEmpty())     return ;
+
+    quint16 slaverAddr = strSlaverAddr.toInt(nullptr, 16);
+    quint16 regAddr    = strRegAddr.toInt(nullptr, 16);
+    quint16 regNum     = strRegNum.toInt(nullptr, 16);
+
+    QByteArray txbuf;
+    txbuf.append(slaverAddr);
+    txbuf.append(0x03);
+    txbuf.append(regAddr>>8);
+    txbuf.append(regAddr);
+    txbuf.append(regNum>>8);
+    txbuf.append(regNum);
 
    this->sendFrame(txbuf);
 }
@@ -338,10 +358,27 @@ void ModbusTool::on_btn03Send_clicked()
  */
 void ModbusTool::on_btn04Send_clicked()
 {
-    QString tmp = ui->txt04SlaveAddr->text() + ui->txt04RegAddr->text() + ui->txt04RegNum->text();
-    tmp.remove(QRegExp ("\\s")); // delete space
-    QByteArray txbuf = QByteArray::fromHex(tmp.toLocal8Bit());;
-    txbuf.insert(1,0x04);       // insert cmd 0x04
+    if(!currentPort->isOpen()) return ;
+    QString strSlaverAddr = ui->txt04SlaveAddr->text();
+    QString strRegAddr = ui->txt04RegAddr->text();
+    QString strRegNum = ui->txt04RegNum->text();
+
+    if(strSlaverAddr.isEmpty()) return ;
+    if(strRegAddr.isEmpty())    return ;
+    if(strRegNum.isEmpty())     return ;
+
+    quint16 slaverAddr = strSlaverAddr.toInt(nullptr, 16);
+    quint16 regAddr    = strRegAddr.toInt(nullptr, 16);
+    quint16 regNum     = strRegNum.toInt(nullptr, 16);
+
+    QByteArray txbuf;
+    txbuf.append(slaverAddr);
+    txbuf.append(0x03);// insert cmd 0x04
+    txbuf.append(regAddr>>8);
+    txbuf.append(regAddr);
+    txbuf.append(regNum>>8);
+    txbuf.append(regNum);
+
    this->sendFrame(txbuf);
 
 }
@@ -350,10 +387,27 @@ void ModbusTool::on_btn04Send_clicked()
  */
 void ModbusTool::on_btn06Send_clicked()
 {
-    QString tmp = ui->txt06SlaveAddr->text() + ui->txt06RegAddr->text() + ui->txt06Value->text();
-    tmp.remove(QRegExp ("\\s")); // delete space
-    QByteArray txbuf = QByteArray::fromHex(tmp.toLocal8Bit());;
-    txbuf.insert(1,0x06);       // insert cmd 0x06
+    if(!currentPort->isOpen()) return ;
+    QString strSlaverAddr = ui->txt06SlaveAddr->text();
+    QString strRegAddr = ui->txt06RegAddr->text();
+    QString strValue = ui->txt06Value->text();
+
+    if(strSlaverAddr.isEmpty()) return ;
+    if(strRegAddr.isEmpty())    return ;
+    if(strValue.isEmpty())     return ;
+
+    quint16 slaverAddr = strSlaverAddr.toInt(nullptr, 16);
+    quint16 regAddr    = strRegAddr.toInt(nullptr, 16);
+    quint16 regValue     = strValue.toInt(nullptr, 16);
+
+    QByteArray txbuf;
+    txbuf.append(slaverAddr);
+    txbuf.append(0x06);// insert cmd 0x06
+    txbuf.append(regAddr>>8);
+    txbuf.append(regAddr);
+    txbuf.append(regValue>>8);
+    txbuf.append(regValue);
+
    this->sendFrame(txbuf);
 }
 /**
@@ -361,17 +415,41 @@ void ModbusTool::on_btn06Send_clicked()
  */
 void ModbusTool::on_btn10Send_clicked()
 {
-    QString tmp = ui->txt10SlaveAddr->text() + ui->txt10RegAddr->text() + ui->txt10RegNum->text() + ui->txt10Value->text();
-    tmp.remove(QRegExp ("\\s")); // delete space
-    QByteArray txbuf = QByteArray::fromHex(tmp.toLocal8Bit());
-    txbuf.insert(1,0x010);       // insert cmd 0x06
+    if(!currentPort->isOpen()) return ;
+    QString strSlaverAddr = ui->txt10SlaveAddr->text();
+    QString strRegAddr = ui->txt10RegAddr->text();
+    QString strRegNum = ui->txt10RegNum->text();
+    QString strValue = ui->txt10RegNum->text();
+
+    if(strSlaverAddr.isEmpty()) return ;
+    if(strRegAddr.isEmpty())    return ;
+    if(strRegNum.isEmpty())     return ;
+    if(strValue.isEmpty())     return ;
+
+    quint16 slaverAddr = strSlaverAddr.toInt(nullptr, 16);
+    quint16 regAddr    = strRegAddr.toInt(nullptr, 16);
+    quint16 regNum     = strRegNum.toInt(nullptr, 16);
+
+
+    QByteArray txbuf;
+    txbuf.append(slaverAddr);
+    txbuf.append(0x10);// insert cmd 0x10
+    txbuf.append(regAddr>>8);
+    txbuf.append(regAddr);
+    txbuf.append(regNum>>8);
+    txbuf.append(regNum);
 
     quint8 byteNum = 0;
     byteNum = ui->txt10RegNum->text().toInt(nullptr,16);
     byteNum *= 2;
-    txbuf.insert(6,byteNum);       // insert byteNum
+    txbuf.append(byteNum);    // insert byteNum
 
-   this->sendFrame(txbuf);
+    QString tmp = ui->txt10Value->text();
+    tmp.remove(QRegExp ("\\s")); // delete space
+    QByteArray array = QByteArray::fromHex(tmp.toLocal8Bit());
+
+    txbuf.append(array);
+    this->sendFrame(txbuf);
 }
 
 /**
