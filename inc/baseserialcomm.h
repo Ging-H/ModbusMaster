@@ -69,8 +69,6 @@ public:
     static QByteArray verifyLRC( QByteArray buf );
     static bool isHexString(QString src);
 
-
-//    static void verifyCon?stant  (QByteArray &buf,  qint32 size);
     QByteArray insertVerify(QByteArray &buf, int start, int end, int VerifyStyle);
     qint32 readData   (QByteArray &rxBuffer);
     qint32 writtenData(QString txBuffer);
@@ -82,9 +80,9 @@ public:
 
 signals:
 
+
 public slots:
-
-
+    void slot_writtenData(QByteArray txBuf);
 
 };
 

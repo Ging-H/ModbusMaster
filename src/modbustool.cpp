@@ -10,7 +10,10 @@ ModbusTool::ModbusTool(QWidget *parent) :
     currentPort = new BaseSerialComm();
     this->initComboBox_Config();
     connect(currentPort,SIGNAL(errorOccurred(QSerialPort::SerialPortError)),this,SLOT(slots_errorHandler( QSerialPort::SerialPortError)));
+    connect(this,SIGNAL(signal_writtenData(QByteArray)),currentPort,SLOT(slot_writtenData(QByteArray)));
     this->setLineEditInputType();
+    ui->txtMessage->setStyleSheet("background-color: rgb(46, 47, 48);");
+
 }
 
 ModbusTool::~ModbusTool()
@@ -102,13 +105,7 @@ void ModbusTool::slots_errorHandler(QSerialPort::SerialPortError error)
         break;
     }
 }
-/* 串口接收数据,存储在dataBuf当中 */
-void ModbusTool::slots_RxCallback()
-{
-    QByteArray tmp = currentPort->readAll();
-    rxDataBuf.append(tmp);
 
-}
 /*----------------------------------------------------------------------*/
 /* 设定QLineEdit的编辑事件,限制输入长度,超过这个长度就自动跳转到下一个QLineEdit */
 /**
@@ -263,9 +260,7 @@ void ModbusTool::on_txt06Value_textChanged(const QString &arg1)
     }
 }
 
-
 /*  10H指令   */
-
 /**
  * @brief ModbusTool::on_txt10SlaveAddr_textChanged 限制 txt10SlaveAddr 输入字符长度
  * @param arg1 输入的字符
@@ -373,7 +368,7 @@ void ModbusTool::on_btn04Send_clicked()
 
     QByteArray txbuf;
     txbuf.append(slaverAddr);
-    txbuf.append(0x03);// insert cmd 0x04
+    txbuf.append(0x04);// insert cmd 0x04
     txbuf.append(regAddr>>8);
     txbuf.append(regAddr);
     txbuf.append(regNum>>8);
@@ -458,36 +453,63 @@ void ModbusTool::on_btn10Send_clicked()
  */
 void ModbusTool::sendFrame(QByteArray txbuf)
 {
+    /*-------- 设置文本颜色 ----------*/
+    ui->txtMessage->setTextColor(QColor(255, 128, 128));
+
+    /* RTU模式 */
     if( ui->rdbRTU->isChecked() ){
         if( ui->ckbInsertCRC->isChecked() ){
             quint16 CRC = crc16_modbus_calc((quint8*)txbuf.data(), txbuf.size());
             txbuf.append(CRC);
             txbuf.append(CRC>>8);
         }
-        currentPort->write(txbuf,txbuf.size());
-        ui->txtMessage->append(txbuf.toHex(' ').toUpper().prepend("Tx: "));
-    }else{
-        /* TODO: 改为添加LRC校验码 */
+        QTime currentTime = QTime::currentTime();
+        emit signal_writtenData(txbuf);
+        QString txt = currentTime.toString("[hh:mm:ss.zzz]") + "Tx << ";
+        ui->txtMessage->append(txbuf.toHex(' ').toUpper().prepend(txt.toLocal8Bit()));
+    }else{/* ASCII模式 */
         if( ui->ckbInsertCRC->isChecked() ){
-            quint16 CRC = crc16_modbus_calc((quint8*)txbuf.data(), txbuf.size());
-            txbuf.append(CRC);
-            txbuf.append(CRC>>8);
+            quint8 LRC = verifyLRC((quint8*)txbuf.data(), txbuf.size());
+            txbuf.append(LRC);
         }
         QByteArray tmp = txbuf.toHex().toUpper().prepend(":");
-        currentPort->write(tmp,tmp.size());
-        ui->txtMessage->append(tmp.prepend("Tx: "));
+        tmp.append(0x0D); // '\r'
+        tmp.append(0x0A); // '\n'
+        QTime currentTime = QTime::currentTime();
+        emit signal_writtenData(tmp);
+        tmp.chop(2);
+        tmp.append("\\r");
+        tmp.append("\\n");
+        QString txt = currentTime.toString("[hh:mm:ss.zzz]") + "Tx << ";
+        ui->txtMessage->append(tmp.prepend(txt.toLocal8Bit()));
     }
 }
 
-/******************************************************************************
- * Name:    CRC-16/MODBUS       x16+x15+x2+1
+/*-------------------------  接收数据帧处理 -------------------------*/
+/* 串口接收数据,存储在dataBuf当中 */
+void ModbusTool::slots_RxCallback()
+{
+    /*-------- 设置文本颜色 ----------*/
+    ui->txtMessage->setTextColor(QColor(102, 163, 52));
+    QByteArray tmp = currentPort->readAll();
+    rxDataBuf.append(tmp);
+
+    QTime currentTime = QTime::currentTime();
+    QString txt = currentTime.toString("[hh:mm:ss.zzz]") + "Rx >> ";
+    ui->txtMessage->append(rxDataBuf.toHex(' ').toUpper().prepend(txt.toLocal8Bit()));
+    rxDataBuf.clear();
+}
+
+
+/*************************
+ * Name:    CRC-16/MODBUS x16+x15+x2+1
  * Poly:    0x8005
  * Init:    0xFFFF
  * Refin:   True
  * Refout:  True
  * Xorout:  0x0000
  * Note:
- *****************************************************************************/
+*************************/
 static quint16 crc16Modbus_table[256] = {
 0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241, 0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
 0xCC01, 0x0CC0, 0x0D80, 0xCD41, 0x0F00, 0xCFC1, 0xCE81, 0x0E40, 0x0A00, 0xCAC1, 0xCB81, 0x0B40, 0xC901, 0x09C0, 0x0880, 0xC841,
@@ -506,6 +528,7 @@ static quint16 crc16Modbus_table[256] = {
 0x8801, 0x48C0, 0x4980, 0x8941, 0x4B00, 0x8BC1, 0x8A81, 0x4A40, 0x4E00, 0x8EC1, 0x8F81, 0x4F40, 0x8D01, 0x4DC0, 0x4C80, 0x8C41,
 0x4400, 0x84C1, 0x8581, 0x4540, 0x8701, 0x47C0, 0x4680, 0x8641, 0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040,
 };
+
 quint16 ModbusTool::crc16_modbus_calc(quint8 *data, quint32 length)
 {
     uint16_t tmp = 0;
@@ -516,6 +539,23 @@ quint16 ModbusTool::crc16_modbus_calc(quint8 *data, quint32 length)
         crc = (crc >> 8) ^ crc16Modbus_table[tmp&0xFF];
     }
     return crc; // crc
+}
+
+/**
+ * @brief ModbusTool::verifyLRC  LRC校验码
+ * @param data     数据缓存
+ * @param length   缓存长度
+ * @return  lrc    LRC校验码
+ */
+quint8 ModbusTool::verifyLRC(quint8 *data, quint32 length)
+{
+    if(length == 0) return 0;
+    quint8 lrc = 0;
+    while(length--){
+        lrc += *data++;
+    }
+    lrc = (~lrc) + 1;
+    return lrc;
 }
 
 

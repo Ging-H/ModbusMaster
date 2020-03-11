@@ -231,6 +231,11 @@ qint32 BaseSerialComm::writtenData(QString txBuffer)
     QByteArray tmpBuffer = txBuffer.toLatin1();
     return this->write(tmpBuffer);
 }
+void BaseSerialComm::slot_writtenData(QByteArray txBuf)
+{
+    this->write(txBuf);
+
+}
 
 /* 插入结束符 */
 void BaseSerialComm::insertTerminator(QByteArray &buffer,BaseSerialComm::Terminator terminator)

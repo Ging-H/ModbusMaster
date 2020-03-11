@@ -6,7 +6,7 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QRegExpValidator>
-
+#include <QTime>
 
 
 namespace Ui {
@@ -43,12 +43,14 @@ public:
     void setLineEditInputType();
 
 signals:
+    void signal_writtenData(QByteArray txBuf);
 
 public slots :
     void slots_RxCallback();
     void slots_errorHandler(QSerialPort::SerialPortError error);
 //    void slots_getRxBuf();
     quint16 crc16_modbus_calc(quint8 *data, quint32 length);
+    quint8 verifyLRC(quint8 *data, quint32 length);
     void sendFrame(QByteArray txbuf);
 
 private slots:
