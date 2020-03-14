@@ -31,27 +31,30 @@ public:
         quint8  data[256];// 数据
         quint16  CRC; // 校验码
     }rxFrame;
+
     QByteArray rxDataBuf;
-    qint8 txSlaveAddr;
-    qint8 txRegAddr;
-    qint8 txRegNum;
-    qint8 txRegValue;
+    int  rxCurrSize;
 
     void initComboBox_Config();
     void configPort();
     void initPlot();
     void setLineEditInputType();
 
+    quint16 crc16_modbus_calc(quint8 *data, quint32 length);
+    quint8 verifyLRC(quint8 *data, quint32 length);
+    void sendFrame(QByteArray txbuf);
+    void frameProtocal(QByteArray rxBuf);
+
 signals:
     void signal_writtenData(QByteArray txBuf);
 
 public slots :
     void slots_RxCallback();
+
     void slots_errorHandler(QSerialPort::SerialPortError error);
-//    void slots_getRxBuf();
-    quint16 crc16_modbus_calc(quint8 *data, quint32 length);
-    quint8 verifyLRC(quint8 *data, quint32 length);
-    void sendFrame(QByteArray txbuf);
+
+    void slots_waitForCRC();
+
 
 private slots:
     void on_btnRefresh_clicked();
@@ -82,7 +85,6 @@ private slots:
 
     void on_txt10RegNum_textChanged(const QString &arg1);
 
-
     void on_btnOtherSend_clicked();
 
     void on_btn03Send_clicked();
@@ -95,6 +97,7 @@ private slots:
 
 private:
     Ui::ModbusTool *ui;
+
     BaseSerialComm *currentPort;   // 端口号
 
 };

@@ -1,7 +1,7 @@
 #include "modbustool.h"
 #include "ui_modbustool.h"
 #include <QDebug>
-
+#include <QTimer>
 ModbusTool::ModbusTool(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ModbusTool)
@@ -486,7 +486,10 @@ void ModbusTool::sendFrame(QByteArray txbuf)
 }
 
 /*-------------------------  接收数据帧处理 -------------------------*/
-/* 串口接收数据,存储在dataBuf当中 */
+
+/**
+ * @brief ModbusTool::slots_RxCallback 串口接收数据,存储在dataBuf当中
+ */
 void ModbusTool::slots_RxCallback()
 {
     /*-------- 设置文本颜色 ----------*/
@@ -494,13 +497,50 @@ void ModbusTool::slots_RxCallback()
     QByteArray tmp = currentPort->readAll();
     rxDataBuf.append(tmp);
 
-    QTime currentTime = QTime::currentTime();
-    QString txt = currentTime.toString("[hh:mm:ss.zzz]") + "Rx >> ";
-    ui->txtMessage->append(rxDataBuf.toHex(' ').toUpper().prepend(txt.toLocal8Bit()));
-    rxDataBuf.clear();
+    if(ui->rdbRTU->isChecked()){
+        if( rxDataBuf.size() > 2){
+            quint16 tmp = 0;
+            tmp = crc16_modbus_calc( (quint8 *)rxDataBuf.data(), rxDataBuf.size()-2);
+            quint8 crc_L = rxDataBuf.at(rxDataBuf.size()-2);
+            quint8 crc_H = rxDataBuf.at(rxDataBuf.size()-1);
+            if( tmp == ( (crc_H<<8) + crc_L ) ){// 校验码正确
+                ui->txtMessage->append(" 成功接收一帧数据 ");
+
+                QTime currentTime = QTime::currentTime();
+                QString txt = currentTime.toString("[hh:mm:ss.zzz]") + "Rx >> ";
+                ui->txtMessage->append(rxDataBuf.toHex(' ').toUpper().prepend(txt.toLocal8Bit()));
+                rxDataBuf.clear();
+            }else{
+                qDebug("tmp:%x",tmp);
+                qDebug()<<"size = "  << rxDataBuf.size() ;
+                rxCurrSize = rxDataBuf.size();
+                QTimer::singleShot(10,this,SLOT(slots_waitForCRC()));
+            }
+        }
+
+    }
+}
+/**
+ * @brief ModbusTool::slots_waitForRx 在接收过程中不断的检测CRC校验码,如果校验
+ *        失败,则定时10ms,10ms之后接收缓存的数据长度与之前一致,则认为是校验码错误
+ */
+void ModbusTool::slots_waitForCRC()
+{
+    if(rxCurrSize == rxDataBuf.size()){
+        ui->txtMessage->append(" CRC校验错误 ");
+        QTime currentTime = QTime::currentTime();
+        QString txt = currentTime.toString("[hh:mm:ss.zzz]") + "Rx >> ";
+        ui->txtMessage->append(rxDataBuf.toHex(' ').toUpper().prepend(txt.toLocal8Bit()));
+        rxDataBuf.clear();
+    }
 }
 
+void ModbusTool::frameProtocal(QByteArray rxBuf)
+{
 
+}
+
+/*------------------------------------------------------------------------*/
 /*************************
  * Name:    CRC-16/MODBUS x16+x15+x2+1
  * Poly:    0x8005
