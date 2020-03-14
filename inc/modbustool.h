@@ -31,6 +31,26 @@ public:
         quint8  data[256];// 数据
         quint16  CRC; // 校验码
     }rxFrame;
+    enum ProtocalMode{
+        RTU,
+        ASCII,
+    };
+    enum ModbusCMD{
+        cmd01H = 0x01,
+        cmd02H = 0x02,
+        cmd03H = 0x03,
+        cmd04H = 0x04,
+        cmd05H = 0x05,
+        cmd06H = 0x06,
+        cmd0FH = 0x07,
+        cmd10H = 0x10,
+        cmd14H = 0x14,
+        cmd15H = 0x15,
+        cmd16H = 0x16,
+        cmd17H = 0x17,
+        cmd2BH = 0x2B,
+    };
+
 
     QByteArray rxDataBuf;
     int  rxCurrSize;
@@ -43,7 +63,9 @@ public:
     quint16 crc16_modbus_calc(quint8 *data, quint32 length);
     quint8 verifyLRC(quint8 *data, quint32 length);
     void sendFrame(QByteArray txbuf);
-    void frameProtocal(QByteArray rxBuf);
+    void frameProtocal(QByteArray rxBuf ,ProtocalMode mode);
+    void insertLogAtTime(QString msg);
+
 
 signals:
     void signal_writtenData(QByteArray txBuf);
@@ -103,3 +125,4 @@ private:
 };
 
 #endif // MODBUSTOOL_H
+

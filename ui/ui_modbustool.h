@@ -70,30 +70,30 @@ public:
     QTextEdit *txtMessage;
     QGroupBox *groupBox_8;
     QGridLayout *gridLayout_2;
-    QFrame *line_6;
-    QLineEdit *txt03SlaveAddr;
-    QLineEdit *txt03RegAddr;
-    QLineEdit *txt03Read;
-    QLineEdit *txt04SlaveAddr;
-    QLineEdit *txt04RegAddr;
-    QLineEdit *txt03RegNum;
-    QPushButton *btn04Send;
-    QPushButton *btn06Send;
-    QLineEdit *txt06SlaveAddr;
-    QPushButton *btn03Send;
     QLineEdit *txt04RegNum;
-    QLineEdit *txt06RegAddr;
-    QLineEdit *txt04Read;
     QPushButton *btnOtherSend;
+    QLineEdit *txt06RegAddr;
     QLineEdit *txt10SlaveAddr;
     QPushButton *btn10Send;
     QLineEdit *txt10RegAddr;
-    QFrame *line_2;
     QFrame *line_3;
     QFrame *line_5;
+    QFrame *line_2;
     QLineEdit *txtOtherValue;
     QLineEdit *txt10RegNum;
     QLineEdit *txt06Value;
+    QFrame *line_6;
+    QLineEdit *txt03SlaveAddr;
+    QLineEdit *txt03RegAddr;
+    QLineEdit *txt04RegAddr;
+    QLineEdit *txt04SlaveAddr;
+    QLineEdit *txt03RegNum;
+    QPushButton *btn04Send;
+    QPushButton *btn03Send;
+    QLineEdit *txt06SlaveAddr;
+    QPushButton *btn06Send;
+    QLineEdit *txt03Read;
+    QLineEdit *txt04Read;
     QLineEdit *txt10Value;
     QToolBar *toolBar;
     QButtonGroup *bgpMSS;
@@ -102,7 +102,7 @@ public:
     {
         if (ModbusTool->objectName().isEmpty())
             ModbusTool->setObjectName(QStringLiteral("ModbusTool"));
-        ModbusTool->resize(593, 524);
+        ModbusTool->resize(634, 519);
         ModbusTool->setMinimumSize(QSize(593, 0));
         actionModbusPro = new QAction(ModbusTool);
         actionModbusPro->setObjectName(QStringLiteral("actionModbusPro"));
@@ -303,12 +303,82 @@ public:
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         gridLayout_2->setContentsMargins(6, 6, 6, 6);
+        txt04RegNum = new QLineEdit(groupBox_8);
+        txt04RegNum->setObjectName(QStringLiteral("txt04RegNum"));
+
+        gridLayout_2->addWidget(txt04RegNum, 3, 3, 1, 1);
+
+        btnOtherSend = new QPushButton(groupBox_8);
+        btnOtherSend->setObjectName(QStringLiteral("btnOtherSend"));
+        btnOtherSend->setMaximumSize(QSize(61, 16777215));
+
+        gridLayout_2->addWidget(btnOtherSend, 16, 0, 1, 1);
+
+        txt06RegAddr = new QLineEdit(groupBox_8);
+        txt06RegAddr->setObjectName(QStringLiteral("txt06RegAddr"));
+
+        gridLayout_2->addWidget(txt06RegAddr, 8, 2, 1, 1);
+
+        txt10SlaveAddr = new QLineEdit(groupBox_8);
+        txt10SlaveAddr->setObjectName(QStringLiteral("txt10SlaveAddr"));
+        txt10SlaveAddr->setMinimumSize(QSize(35, 0));
+        txt10SlaveAddr->setMaximumSize(QSize(16777215, 16777215));
+
+        gridLayout_2->addWidget(txt10SlaveAddr, 11, 1, 1, 1);
+
+        btn10Send = new QPushButton(groupBox_8);
+        btn10Send->setObjectName(QStringLiteral("btn10Send"));
+        btn10Send->setMaximumSize(QSize(50, 16777215));
+
+        gridLayout_2->addWidget(btn10Send, 11, 0, 1, 1);
+
+        txt10RegAddr = new QLineEdit(groupBox_8);
+        txt10RegAddr->setObjectName(QStringLiteral("txt10RegAddr"));
+
+        gridLayout_2->addWidget(txt10RegAddr, 11, 2, 1, 1);
+
+        line_3 = new QFrame(groupBox_8);
+        line_3->setObjectName(QStringLiteral("line_3"));
+        line_3->setFrameShape(QFrame::HLine);
+        line_3->setFrameShadow(QFrame::Sunken);
+
+        gridLayout_2->addWidget(line_3, 7, 0, 1, 5);
+
+        line_5 = new QFrame(groupBox_8);
+        line_5->setObjectName(QStringLiteral("line_5"));
+        line_5->setFrameShape(QFrame::HLine);
+        line_5->setFrameShadow(QFrame::Sunken);
+
+        gridLayout_2->addWidget(line_5, 15, 0, 1, 5);
+
+        line_2 = new QFrame(groupBox_8);
+        line_2->setObjectName(QStringLiteral("line_2"));
+        line_2->setFrameShape(QFrame::HLine);
+        line_2->setFrameShadow(QFrame::Sunken);
+
+        gridLayout_2->addWidget(line_2, 2, 0, 1, 5);
+
+        txtOtherValue = new QLineEdit(groupBox_8);
+        txtOtherValue->setObjectName(QStringLiteral("txtOtherValue"));
+
+        gridLayout_2->addWidget(txtOtherValue, 16, 1, 1, 4);
+
+        txt10RegNum = new QLineEdit(groupBox_8);
+        txt10RegNum->setObjectName(QStringLiteral("txt10RegNum"));
+
+        gridLayout_2->addWidget(txt10RegNum, 11, 3, 1, 2);
+
+        txt06Value = new QLineEdit(groupBox_8);
+        txt06Value->setObjectName(QStringLiteral("txt06Value"));
+
+        gridLayout_2->addWidget(txt06Value, 8, 3, 1, 2);
+
         line_6 = new QFrame(groupBox_8);
         line_6->setObjectName(QStringLiteral("line_6"));
         line_6->setFrameShape(QFrame::HLine);
         line_6->setFrameShadow(QFrame::Sunken);
 
-        gridLayout_2->addWidget(line_6, 7, 0, 1, 5);
+        gridLayout_2->addWidget(line_6, 9, 0, 1, 5);
 
         txt03SlaveAddr = new QLineEdit(groupBox_8);
         txt03SlaveAddr->setObjectName(QStringLiteral("txt03SlaveAddr"));
@@ -320,42 +390,26 @@ public:
 
         gridLayout_2->addWidget(txt03RegAddr, 0, 2, 1, 1);
 
-        txt03Read = new QLineEdit(groupBox_8);
-        txt03Read->setObjectName(QStringLiteral("txt03Read"));
+        txt04RegAddr = new QLineEdit(groupBox_8);
+        txt04RegAddr->setObjectName(QStringLiteral("txt04RegAddr"));
 
-        gridLayout_2->addWidget(txt03Read, 0, 4, 1, 1);
+        gridLayout_2->addWidget(txt04RegAddr, 3, 2, 1, 1);
 
         txt04SlaveAddr = new QLineEdit(groupBox_8);
         txt04SlaveAddr->setObjectName(QStringLiteral("txt04SlaveAddr"));
 
-        gridLayout_2->addWidget(txt04SlaveAddr, 2, 1, 1, 1);
-
-        txt04RegAddr = new QLineEdit(groupBox_8);
-        txt04RegAddr->setObjectName(QStringLiteral("txt04RegAddr"));
-
-        gridLayout_2->addWidget(txt04RegAddr, 2, 2, 1, 1);
+        gridLayout_2->addWidget(txt04SlaveAddr, 3, 1, 1, 1);
 
         txt03RegNum = new QLineEdit(groupBox_8);
         txt03RegNum->setObjectName(QStringLiteral("txt03RegNum"));
 
-        gridLayout_2->addWidget(txt03RegNum, 0, 3, 1, 1);
+        gridLayout_2->addWidget(txt03RegNum, 0, 3, 1, 2);
 
         btn04Send = new QPushButton(groupBox_8);
         btn04Send->setObjectName(QStringLiteral("btn04Send"));
         btn04Send->setMaximumSize(QSize(50, 16777215));
 
-        gridLayout_2->addWidget(btn04Send, 2, 0, 1, 1);
-
-        btn06Send = new QPushButton(groupBox_8);
-        btn06Send->setObjectName(QStringLiteral("btn06Send"));
-        btn06Send->setMaximumSize(QSize(50, 16777215));
-
-        gridLayout_2->addWidget(btn06Send, 6, 0, 1, 1);
-
-        txt06SlaveAddr = new QLineEdit(groupBox_8);
-        txt06SlaveAddr->setObjectName(QStringLiteral("txt06SlaveAddr"));
-
-        gridLayout_2->addWidget(txt06SlaveAddr, 6, 1, 1, 1);
+        gridLayout_2->addWidget(btn04Send, 3, 0, 1, 1);
 
         btn03Send = new QPushButton(groupBox_8);
         btn03Send->setObjectName(QStringLiteral("btn03Send"));
@@ -363,85 +417,34 @@ public:
 
         gridLayout_2->addWidget(btn03Send, 0, 0, 1, 1);
 
-        txt04RegNum = new QLineEdit(groupBox_8);
-        txt04RegNum->setObjectName(QStringLiteral("txt04RegNum"));
+        txt06SlaveAddr = new QLineEdit(groupBox_8);
+        txt06SlaveAddr->setObjectName(QStringLiteral("txt06SlaveAddr"));
 
-        gridLayout_2->addWidget(txt04RegNum, 2, 3, 1, 1);
+        gridLayout_2->addWidget(txt06SlaveAddr, 8, 1, 1, 1);
 
-        txt06RegAddr = new QLineEdit(groupBox_8);
-        txt06RegAddr->setObjectName(QStringLiteral("txt06RegAddr"));
+        btn06Send = new QPushButton(groupBox_8);
+        btn06Send->setObjectName(QStringLiteral("btn06Send"));
+        btn06Send->setMaximumSize(QSize(50, 16777215));
 
-        gridLayout_2->addWidget(txt06RegAddr, 6, 2, 1, 1);
+        gridLayout_2->addWidget(btn06Send, 8, 0, 1, 1);
+
+        txt03Read = new QLineEdit(groupBox_8);
+        txt03Read->setObjectName(QStringLiteral("txt03Read"));
+        txt03Read->setMinimumSize(QSize(0, 0));
+        txt03Read->setReadOnly(false);
+
+        gridLayout_2->addWidget(txt03Read, 1, 1, 1, 4);
 
         txt04Read = new QLineEdit(groupBox_8);
         txt04Read->setObjectName(QStringLiteral("txt04Read"));
+        txt04Read->setReadOnly(false);
 
-        gridLayout_2->addWidget(txt04Read, 2, 4, 1, 1);
-
-        btnOtherSend = new QPushButton(groupBox_8);
-        btnOtherSend->setObjectName(QStringLiteral("btnOtherSend"));
-        btnOtherSend->setMaximumSize(QSize(61, 16777215));
-
-        gridLayout_2->addWidget(btnOtherSend, 14, 0, 1, 1);
-
-        txt10SlaveAddr = new QLineEdit(groupBox_8);
-        txt10SlaveAddr->setObjectName(QStringLiteral("txt10SlaveAddr"));
-        txt10SlaveAddr->setMinimumSize(QSize(35, 0));
-        txt10SlaveAddr->setMaximumSize(QSize(16777215, 16777215));
-
-        gridLayout_2->addWidget(txt10SlaveAddr, 9, 1, 1, 1);
-
-        btn10Send = new QPushButton(groupBox_8);
-        btn10Send->setObjectName(QStringLiteral("btn10Send"));
-        btn10Send->setMaximumSize(QSize(50, 16777215));
-
-        gridLayout_2->addWidget(btn10Send, 9, 0, 1, 1);
-
-        txt10RegAddr = new QLineEdit(groupBox_8);
-        txt10RegAddr->setObjectName(QStringLiteral("txt10RegAddr"));
-
-        gridLayout_2->addWidget(txt10RegAddr, 9, 2, 1, 1);
-
-        line_2 = new QFrame(groupBox_8);
-        line_2->setObjectName(QStringLiteral("line_2"));
-        line_2->setFrameShape(QFrame::HLine);
-        line_2->setFrameShadow(QFrame::Sunken);
-
-        gridLayout_2->addWidget(line_2, 1, 0, 1, 5);
-
-        line_3 = new QFrame(groupBox_8);
-        line_3->setObjectName(QStringLiteral("line_3"));
-        line_3->setFrameShape(QFrame::HLine);
-        line_3->setFrameShadow(QFrame::Sunken);
-
-        gridLayout_2->addWidget(line_3, 5, 0, 1, 5);
-
-        line_5 = new QFrame(groupBox_8);
-        line_5->setObjectName(QStringLiteral("line_5"));
-        line_5->setFrameShape(QFrame::HLine);
-        line_5->setFrameShadow(QFrame::Sunken);
-
-        gridLayout_2->addWidget(line_5, 13, 0, 1, 5);
-
-        txtOtherValue = new QLineEdit(groupBox_8);
-        txtOtherValue->setObjectName(QStringLiteral("txtOtherValue"));
-
-        gridLayout_2->addWidget(txtOtherValue, 14, 1, 1, 4);
-
-        txt10RegNum = new QLineEdit(groupBox_8);
-        txt10RegNum->setObjectName(QStringLiteral("txt10RegNum"));
-
-        gridLayout_2->addWidget(txt10RegNum, 9, 3, 1, 2);
-
-        txt06Value = new QLineEdit(groupBox_8);
-        txt06Value->setObjectName(QStringLiteral("txt06Value"));
-
-        gridLayout_2->addWidget(txt06Value, 6, 3, 1, 2);
+        gridLayout_2->addWidget(txt04Read, 4, 1, 1, 3);
 
         txt10Value = new QLineEdit(groupBox_8);
         txt10Value->setObjectName(QStringLiteral("txt10Value"));
 
-        gridLayout_2->addWidget(txt10Value, 12, 0, 1, 5);
+        gridLayout_2->addWidget(txt10Value, 14, 1, 1, 4);
 
 
         gridLayout_3->addWidget(groupBox_8, 0, 1, 2, 1);
@@ -513,26 +516,26 @@ public:
         rdbRTU->setText(QApplication::translate("ModbusTool", "RTU", Q_NULLPTR));
         rdbASCII->setText(QApplication::translate("ModbusTool", "ASCII", Q_NULLPTR));
         groupBox_8->setTitle(QApplication::translate("ModbusTool", "\345\270\270\347\224\250\346\214\207\344\273\244", Q_NULLPTR));
-        txt03SlaveAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
-        txt03RegAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
-        txt03Read->setPlaceholderText(QApplication::translate("ModbusTool", "Read", Q_NULLPTR));
-        txt04SlaveAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
-        txt04RegAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
-        txt03RegNum->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
-        btn04Send->setText(QApplication::translate("ModbusTool", "04H", Q_NULLPTR));
-        btn06Send->setText(QApplication::translate("ModbusTool", "06H", Q_NULLPTR));
-        txt06SlaveAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
-        btn03Send->setText(QApplication::translate("ModbusTool", "03H", Q_NULLPTR));
         txt04RegNum->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
-        txt06RegAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
-        txt04Read->setPlaceholderText(QApplication::translate("ModbusTool", "Read", Q_NULLPTR));
         btnOtherSend->setText(QApplication::translate("ModbusTool", "\345\205\266\344\273\226\346\214\207\344\273\244", Q_NULLPTR));
+        txt06RegAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
         txt10SlaveAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
         btn10Send->setText(QApplication::translate("ModbusTool", "10H", Q_NULLPTR));
         txt10RegAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
         txtOtherValue->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\205\351\234\200\350\276\223\345\205\245\345\215\201\345\205\255\350\277\233\345\210\266\345\255\227\347\254\246", Q_NULLPTR));
         txt10RegNum->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
         txt06Value->setPlaceholderText(QApplication::translate("ModbusTool", "\345\200\274", Q_NULLPTR));
+        txt03SlaveAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
+        txt03RegAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
+        txt04RegAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\345\234\260\345\235\200", Q_NULLPTR));
+        txt04SlaveAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
+        txt03RegNum->setPlaceholderText(QApplication::translate("ModbusTool", "\345\257\204\345\255\230\345\231\250\346\225\260\351\207\217", Q_NULLPTR));
+        btn04Send->setText(QApplication::translate("ModbusTool", "04H", Q_NULLPTR));
+        btn03Send->setText(QApplication::translate("ModbusTool", "03H", Q_NULLPTR));
+        txt06SlaveAddr->setPlaceholderText(QApplication::translate("ModbusTool", "\344\273\216\345\234\260\345\235\200", Q_NULLPTR));
+        btn06Send->setText(QApplication::translate("ModbusTool", "06H", Q_NULLPTR));
+        txt03Read->setPlaceholderText(QApplication::translate("ModbusTool", "Read", Q_NULLPTR));
+        txt04Read->setPlaceholderText(QApplication::translate("ModbusTool", "Read", Q_NULLPTR));
         txt10Value->setPlaceholderText(QApplication::translate("ModbusTool", "\346\225\260\346\215\256\345\200\274", Q_NULLPTR));
         toolBar->setWindowTitle(QApplication::translate("ModbusTool", "toolBar", Q_NULLPTR));
     } // retranslateUi
