@@ -1,7 +1,7 @@
 #include "modbustool.h"
 #include "ui_modbustool.h"
-#include <QDebug>
-#include <QTimer>
+
+
 ModbusTool::ModbusTool(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ModbusTool)
@@ -13,6 +13,13 @@ ModbusTool::ModbusTool(QWidget *parent) :
     connect(this,SIGNAL(signal_writtenData(QByteArray)),currentPort,SLOT(slot_writtenData(QByteArray)));
     this->setLineEditInputType();
     ui->txtMessage->setStyleSheet("background-color: rgb(46, 47, 48);");
+    connect(this, SIGNAL(signal_cmd01HProtocal()), this, SLOT(slots_cmd01HProtocal()) );
+    connect(this, SIGNAL(signal_cmd03HProtocal()), this, SLOT(slots_cmd03HProtocal()) );
+    connect(this, SIGNAL(signal_cmd05HProtocal()), this, SLOT(slots_cmd05HProtocal()) );
+    connect(this, SIGNAL(signal_cmd06HProtocal()), this, SLOT(slots_cmd06HProtocal()) );
+    connect(this, SIGNAL(signal_cmd10HProtocal()), this, SLOT(slots_cmd10HProtocal()) );
+
+    this->getInitTxt();
 }
 
 ModbusTool::~ModbusTool()
@@ -491,7 +498,7 @@ void ModbusTool::slots_RxCallback()
     rxDataBuf.append(tmp);
 
     if(ui->rdbRTU->isChecked()){
-        if( rxDataBuf.size() > 5){ // CRC 至少有 5个字节
+        if( rxDataBuf.size() >= 5){ // CRC 至少有 5个字节
             quint16 tmp = 0;
             tmp = crc16_modbus_calc( (quint8 *)rxDataBuf.data(), rxDataBuf.size()-2);
             quint8 crc_L = rxDataBuf.at(rxDataBuf.size()-2);
@@ -503,11 +510,12 @@ void ModbusTool::slots_RxCallback()
                 rxDataBuf.clear();
             }else{
                 rxCurrSize = rxDataBuf.size();  // 记录当前接收的数据帧长度,用于10ms后判断是否没有数据
+
                 QTimer::singleShot(10,this,SLOT(slots_waitForCRC()));
             }
         }
     }else{
-        if( rxDataBuf.size() > 7){  // CRC 至少有 9个字节
+        if( rxDataBuf.size() >= 9){  // CRC 至少有 9个字节
             QString tmp = rxDataBuf;
             QRegExp regExp(":[a-fA-F0-9]+\\r\\n");  // 匹配十六进制字符和空格
             int pos = regExp.indexIn(tmp);
@@ -552,6 +560,7 @@ void ModbusTool::slots_waitForCRC()
  */
 void ModbusTool::frameProtocal(QByteArray rxBuf,ProtocalMode mode)
 {
+    ui->txtMessage->setTextColor(QColor(69, 198, 214));// 蓝色
 //    rxBuf = rxBuf;
     if( mode == ASCII){
         QByteArray tmp;
@@ -561,68 +570,226 @@ void ModbusTool::frameProtocal(QByteArray rxBuf,ProtocalMode mode)
         quint8 lrc = this->verifyLRC( (quint8 *)rxBuf.data(), rxBuf.size() );
         if(lrc != 0){ // 校验码错误
             ui->txtMessage->append("LRC校验错误");
-            ui->txtMessage->append("----------------------------------------------");
+            ui->txtMessage->append("-----------------------------------------------------");
             return;
         }
+        rxFrame.verify = (quint8)rxBuf.at(rxBuf.size()-1);
+    }else{
+        /* CRC校验码 */
+        rxFrame.verify = ((quint8)rxBuf.at(rxBuf.size()-1)<<8) + ((quint8)rxBuf.at(rxBuf.size()-2));
     }
     rxFrame.slaveAddr = rxBuf.at(0);
     rxFrame.cmd = rxBuf.at(1);
+
     if(rxFrame.cmd & 0x80){
-        ui->txtMessage->append("Modbus异常响应:");
-        QString str = "异常码: 0x%1";
-        quint8 exception = rxBuf.at(2);
-        ui->txtMessage->append(str.arg(exception, 2, 16, QLatin1Char('0')));
-        switch( exception ){
-        case 0x01: ui->txtMessage->append("非法功能");
-            break;
-        case 0x02: ui->txtMessage->append("非法数据地址");
-            break;
-        case 0x03: ui->txtMessage->append("非法数据值");
-            break;
-        case 0x04: ui->txtMessage->append("从站设备故障");
-            break;
-        case 0x05: ui->txtMessage->append("确认,已接收请求, 但需要时间完成");
-            break;
-        case 0x06: ui->txtMessage->append("从属设备忙");
-            break;
-        case 0x08: ui->txtMessage->append("存储奇偶性差错");
-            break;
-        default :  ui->txtMessage->append("其他未知异常码");
-            break ;
-        }
+        ExceptionCode exception = (ExceptionCode)rxBuf.at(2);
+        this->exceptionHandle( exception );
     }else{
-        ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
         switch(rxFrame.cmd){
+        case cmd01H:
+        case cmd02H:
+            rxFrame.byteNum = rxBuf.at(2);
+            memcpy(rxFrame.data, rxBuf.data()+3, rxFrame.byteNum);
+            emit this->signal_cmd01HProtocal();
+            break;
         case cmd03H:
+        case cmd04H:
             rxFrame.byteNum = rxBuf.at(2);
             rxFrame.regNum  = rxFrame.byteNum/2;
-            rxFrame.CRC = ((quint8)rxBuf.at(rxBuf.size()-2)<<8) + ((quint8)rxBuf.at(rxBuf.size()-1));
-
-            QByteArray data(rxBuf.data()+3, rxFrame.byteNum);
-            QString tmpStr;
-            quint16 value = 0;
-            for(int i=0; i<rxFrame.byteNum; i+=2 ){
-                value = ((quint8)data.at(i)<<8) + (quint8)data.at(i+1) ;
-                tmpStr += tr("%1 ").arg(value, 4, 16, QLatin1Char('0')).toUpper();
-            }
-
-            if(tmpStr.isEmpty())
-                tmpStr += "0000";
-
-            ui->txtMessage->append("功能码: 03");
-            ui->txtMessage->append("寄存器: " + QString("%1").arg(rxFrame.regNum,  2, 16, QLatin1Char('0')).toUpper());
-            ui->txtMessage->append("字节数: " + QString("%1").arg(rxFrame.byteNum, 2, 16, QLatin1Char('0')).toUpper());
-            ui->txtMessage->append("数据值: " + tmpStr);
-            ui->txtMessage->append("校验码: " + QString("%1").arg(rxFrame.CRC, 2, 16, QLatin1Char('0')).toUpper());
-            ui->txt03Read->setText(tmpStr);
+            memcpy(rxFrame.data, rxBuf.data()+3, rxFrame.byteNum);
+            emit this->signal_cmd03HProtocal();
+            break;
+        case cmd05H:
+            rxFrame.regAddr = ((quint8)rxBuf.at(2)<<8) + ((quint8)rxBuf.at(3));
+            rxFrame.data[0] = rxBuf.at(4);
+            rxFrame.data[1] = rxBuf.at(5);
+            emit this->signal_cmd05HProtocal();
+            break;
+        case cmd06H:
+            rxFrame.regAddr = ((quint8)rxBuf.at(2)<<8) + ((quint8)rxBuf.at(3));
+            rxFrame.data[0] = rxBuf.at(4);
+            rxFrame.data[1] = rxBuf.at(5);
+            emit this->signal_cmd06HProtocal();
+            break;
+        case cmd0FH:
+        case cmd10H:
+            rxFrame.regAddr = ((quint8)rxBuf.at(2)<<8) + ((quint8)rxBuf.at(3));
+            rxFrame.regNum  = ((quint8)rxBuf.at(4)<<8) + ((quint8)rxBuf.at(5));
+            emit this->signal_cmd10HProtocal();
+            break;
+        default :
+            ui->txtMessage->append("未支持功能码，请自行分析");
             break;
         }
     }
-
-    ui->txtMessage->append("----------------------------------------------");
+    ui->txtMessage->append("-----------------------------------------------------");
 }
 
+void ModbusTool::exceptionHandle(ExceptionCode exception )
+{
+    ui->txtMessage->setTextColor(QColor(214, 149, 69));// 橙色
+    ui->txtMessage->append("Modbus异常响应:");
+    QString str = "异常码: 0x%1";
+    ui->txtMessage->append(str.arg(exception, 2, 16, QLatin1Char('0')));
+
+    switch( exception ){
+    case 0x01: ui->txtMessage->append("非法功能");
+        break;
+    case 0x02: ui->txtMessage->append("非法数据地址");
+        break;
+    case 0x03: ui->txtMessage->append("非法数据值");
+        break;
+    case 0x04: ui->txtMessage->append("从站设备故障");
+        break;
+    case 0x05: ui->txtMessage->append("确认,已接收请求, 但需要时间完成");
+        break;
+    case 0x06: ui->txtMessage->append("从属设备忙");
+        break;
+    case 0x08: ui->txtMessage->append("存储奇偶性差错");
+        break;
+    default :  ui->txtMessage->append("其他未知异常码");
+        break ;
+    }
+}
+
+/**
+ * @brief ModbusTool::cmd01HProtocal 协议01指令解析，在文本框显示信息
+ */
+void ModbusTool::slots_cmd01HProtocal()
+{
+    QString tmpStr = "LSB-> ";
+    quint8 value;
+    for(int i=0; i<rxFrame.byteNum; i++ ){
+
+        value = rxFrame.data[i];
+        for(int j=0; j<8; j++ ){
+            if(value & 0x01){
+                tmpStr += "1";
+            }else{
+                tmpStr += "0";
+            }
+            value>>=1;
+        }
+        tmpStr += " ";
+    }
+    tmpStr += "->MSB";
+    if(tmpStr.isEmpty())
+        tmpStr += "00000000";
+
+    ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("字节数: " + QString("%1").arg(rxFrame.byteNum, 2, 10));
+    ui->txtMessage->append("数据值: " + tmpStr);
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+}
+
+/**
+ * @brief ModbusTool::cmd03HProtocal 协议03指令解析，在文本框显示信息
+ */
+void ModbusTool::slots_cmd03HProtocal()
+{
+    QString tmpStr;
+    quint16 value = 0;
+    for(int i=0; i<rxFrame.byteNum; i+=2 ){
+        value = (rxFrame.data[i]<<8) + rxFrame.data[i+1] ;
+        tmpStr += tr("%1H ").arg(value, 4, 16, QLatin1Char('0')).toUpper();
+    }
+
+    if(tmpStr.isEmpty())
+        tmpStr += "0000";
+
+    ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("寄存器数量: " + QString("%1").arg(rxFrame.regNum,  2, 10));
+    ui->txtMessage->append("字节数: " + QString("%1").arg(rxFrame.byteNum, 2, 10));
+    ui->txtMessage->append("数据值: " + tmpStr);
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+    if(rxFrame.cmd == cmd03H){
+        ui->txt03Read->setText(tmpStr);
+    }else{
+        ui->txt04Read->setText(tmpStr);
+    }
+}
+/**
+ * @brief ModbusTool::slots_cmd05HProtocal 协议05H指令解析
+ */
+void ModbusTool::slots_cmd05HProtocal()
+{
+    quint16 value = (rxFrame.data[0]<<8) + rxFrame.data[1];
+    ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("地址: "   + QString("%1H").arg(rxFrame.regAddr,  4, 16,QLatin1Char('0')).toUpper());
+    if(value == 0xFF00){
+        ui->txtMessage->append("写入线圈: ON");
+    }else{
+        ui->txtMessage->append("写入线圈: OFF");
+    }
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+}
+/**
+ * @brief ModbusTool::slots_cmd06HProtocal 协议06H指令解析
+ */
+void ModbusTool::slots_cmd06HProtocal()
+{
+    quint16 value = (rxFrame.data[0]<<8) + rxFrame.data[1];
+    ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("地址: "   + QString("%1H").arg(rxFrame.regAddr,  4, 16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("数据值: " + QString("%1H").arg(value,  4, 16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+}
+
+/**
+ * @brief ModbusTool::slots_cmd10HProtocal 协议10H指令解析
+ */
+void ModbusTool::slots_cmd10HProtocal()
+{
+    ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("首地址: " + QString("%1H").arg(rxFrame.regAddr,  4, 16,QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("写入数量: " + QString("%1").arg(rxFrame.regNum,  2, 10));
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+}
+
+
+/* 扩展功能 */
+/*----------------------------------------------------------------------------*/
+/**
+ * @brief ModbusTool::on_btnExpand_clicked 扩展多条指令
+ */
+void ModbusTool::on_btnExpand_clicked()
+{
+    if(!isExpand){
+        QGroupBox *newGroupBox = new QGroupBox(this);
+        newGroupBox->setTitle("模拟设备");
+        QLayout *mainLayout = ui->centralWidget->layout();
+        mainLayout->addWidget(newGroupBox);
+        newGroupBox->setMinimumWidth(200);
+        QRect geo = this->geometry();
+        geo.setWidth(geo.width() + 200);
+        this->setGeometry(geo);
+
+
+
+
+        isExpand = true;
+
+
+
+    }else{
+        QLayout *mainLayout = ui->centralWidget->layout();
+        delete mainLayout->takeAt( mainLayout->count()-1 )->widget();
+        QRect geo = this->geometry();
+        geo.setWidth(geo.width() - 200);
+        this->setGeometry(geo);
+
+        isExpand = false ;
+    }
+}
+
+
 /*------------------------------------------------------------------------*/
+
 /*************************
  * Name:    CRC-16/MODBUS x16+x15+x2+1
  * Poly:    0x8005
@@ -679,5 +846,104 @@ quint8 ModbusTool::verifyLRC(quint8 *data, quint32 length)
     lrc = (~lrc) + 1;
     return lrc;
 }
+/**
+ * @brief ModbusTool::closeEvent 重写窗口关闭事件，保存数据
+ * @param e
+ */
+void ModbusTool::closeEvent(QCloseEvent *e)
+{
+    e = e;
+    QSettings settings("ModbusMaster.ini", QSettings::IniFormat);
+    settings.clear();
+    settings.beginGroup("QLineEdit");
+
+    QObjectList objList = ui->groupBox_8->children();
+    QLineEdit *txtEdit;
+    foreach (QObject *obj, objList) {
+        txtEdit = qobject_cast<QLineEdit*>(obj);
+        if(txtEdit){
+            if(!txtEdit->text().isEmpty())
+                settings.setValue(txtEdit->objectName(), txtEdit->text());
+        }
+    }
+}
+/**
+ * @brief ModbusTool::getInitTxt 读取数据
+ */
+void ModbusTool::getInitTxt()
+{
+    QSettings settings("ModbusMaster.ini", QSettings::IniFormat);
+    settings.beginGroup("QLineEdit");
+    QLineEdit *txtEdit;
+    QStringList keyList =  settings.childKeys();
+    foreach (QString objName, keyList) {
+        txtEdit = ui->groupBox_8->findChild< QLineEdit * >(objName);
+        if(txtEdit){
+           txtEdit->setText(settings.value(objName).toString());
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

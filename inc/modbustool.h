@@ -7,7 +7,10 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QTime>
-
+#include <QDebug>
+#include <QTimer>
+#include <QSettings>
+#include <QCloseEvent>
 
 namespace Ui {
 class ModbusTool;
@@ -22,15 +25,26 @@ public:
     ~ModbusTool();
 
     /* 接收数据帧 */
-    struct {
+    struct RxProtocal{
         quint8 slaveAddr; // 从设备地址
         quint8 cmd;       // 指令
         quint16 regAddr;  // 寄存器地址
         quint16 regNum;   // 寄存器数量
         quint8  byteNum;  // 字节数
         quint8  data[256];// 数据
-        quint16  CRC; // 校验码
+        quint16  verify; // 校验码
     }rxFrame;
+    struct Bit_Field
+    {
+        quint8  bit0:1;
+        quint8  bit1:1;
+        quint8  bit2:1;
+        quint8  bit3:1;
+        quint8  bit4:1;
+        quint8  bit5:1;
+        quint8  bit6:1;
+        quint8  bit7:1;
+    };
     enum ProtocalMode{
         RTU,
         ASCII,
@@ -42,18 +56,25 @@ public:
         cmd04H = 0x04,
         cmd05H = 0x05,
         cmd06H = 0x06,
-        cmd0FH = 0x07,
+        cmd0FH = 0x0F,
         cmd10H = 0x10,
-        cmd14H = 0x14,
-        cmd15H = 0x15,
-        cmd16H = 0x16,
-        cmd17H = 0x17,
-        cmd2BH = 0x2B,
+    };
+    enum ExceptionCode{
+        Exception01 = 1,
+        Exception02 ,
+        Exception03 ,
+        Exception04 ,
+        Exception05 ,
+        Exception06 ,
+        Exception07 ,
+        Exception08 ,
+
     };
 
 
     QByteArray rxDataBuf;
     int  rxCurrSize;
+    bool  isExpand = false;
 
     void initComboBox_Config();
     void configPort();
@@ -65,10 +86,22 @@ public:
     void sendFrame(QByteArray txbuf);
     void frameProtocal(QByteArray rxBuf ,ProtocalMode mode);
     void insertLogAtTime(QString msg);
+    void getInitTxt();
+    void exceptionHandle(ExceptionCode exception );
 
 
 signals:
     void signal_writtenData(QByteArray txBuf);
+
+    void signal_cmd01HProtocal();
+
+    void signal_cmd03HProtocal();
+
+    void signal_cmd05HProtocal();
+
+    void signal_cmd06HProtocal();
+
+    void signal_cmd10HProtocal();
 
 public slots :
     void slots_RxCallback();
@@ -76,6 +109,17 @@ public slots :
     void slots_errorHandler(QSerialPort::SerialPortError error);
 
     void slots_waitForCRC();
+
+    void slots_cmd01HProtocal();
+
+    void slots_cmd03HProtocal();
+
+    void slots_cmd05HProtocal();
+
+    void slots_cmd06HProtocal();
+
+    void slots_cmd10HProtocal();
+
 
 
 private slots:
@@ -116,6 +160,12 @@ private slots:
     void on_btn06Send_clicked();
 
     void on_btn10Send_clicked();
+
+
+    void on_btnExpand_clicked();
+
+protected :
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::ModbusTool *ui;

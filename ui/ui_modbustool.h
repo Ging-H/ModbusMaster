@@ -18,6 +18,7 @@
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -38,7 +39,7 @@ public:
     QAction *actionModbusPro;
     QAction *actionHelp;
     QWidget *centralWidget;
-    QGridLayout *gridLayout_6;
+    QHBoxLayout *horizontalLayout;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_3;
     QGroupBox *QGBSerialConfig;
@@ -102,7 +103,7 @@ public:
     {
         if (ModbusTool->objectName().isEmpty())
             ModbusTool->setObjectName(QStringLiteral("ModbusTool"));
-        ModbusTool->resize(634, 519);
+        ModbusTool->resize(643, 487);
         ModbusTool->setMinimumSize(QSize(593, 0));
         actionModbusPro = new QAction(ModbusTool);
         actionModbusPro->setObjectName(QStringLiteral("actionModbusPro"));
@@ -110,10 +111,10 @@ public:
         actionHelp->setObjectName(QStringLiteral("actionHelp"));
         centralWidget = new QWidget(ModbusTool);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        gridLayout_6 = new QGridLayout(centralWidget);
-        gridLayout_6->setSpacing(6);
-        gridLayout_6->setContentsMargins(11, 11, 11, 11);
-        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        horizontalLayout = new QHBoxLayout(centralWidget);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         groupBox = new QGroupBox(centralWidget);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -454,7 +455,7 @@ public:
         groupBox_2->raise();
         txtMessage->raise();
 
-        gridLayout_6->addWidget(groupBox, 0, 0, 1, 1);
+        horizontalLayout->addWidget(groupBox);
 
         ModbusTool->setCentralWidget(centralWidget);
         toolBar = new QToolBar(ModbusTool);
