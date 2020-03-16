@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>952</width>
+    <width>626</width>
     <height>487</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <widget class="QGroupBox" name="groupBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -274,7 +274,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>85</y>
+            <y>60</y>
             <width>141</width>
             <height>18</height>
            </rect>
@@ -318,7 +318,7 @@
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>135</y>
+            <y>115</y>
             <width>61</width>
             <height>26</height>
            </rect>
@@ -327,27 +327,11 @@
            <string>清空</string>
           </property>
          </widget>
-         <widget class="QLabel" name="lblInfo">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>140</y>
-            <width>151</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="textFormat">
-           <enum>Qt::PlainText</enum>
-          </property>
-         </widget>
          <widget class="QSplitter" name="splitter_2">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>110</y>
+            <y>85</y>
             <width>116</width>
             <height>18</height>
            </rect>
@@ -374,6 +358,22 @@
             <string notr="true">bgpMSS</string>
            </attribute>
           </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>115</y>
+            <width>80</width>
+            <height>26</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>连续发送</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
          </widget>
         </widget>
        </item>
@@ -440,13 +440,6 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="3" colspan="2">
-           <widget class="QLineEdit" name="txt06Value">
-            <property name="placeholderText">
-             <string>值</string>
-            </property>
-           </widget>
-          </item>
           <item row="9" column="0" colspan="5">
            <widget class="Line" name="line_6">
             <property name="orientation">
@@ -468,6 +461,13 @@
             </property>
            </widget>
           </item>
+          <item row="8" column="3" colspan="2">
+           <widget class="QLineEdit" name="txt06Value">
+            <property name="placeholderText">
+             <string>值</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="btn03Send">
             <property name="maximumSize">
@@ -478,40 +478,6 @@
             </property>
             <property name="text">
              <string>03H</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QPushButton" name="btn04Send">
-            <property name="maximumSize">
-             <size>
-              <width>50</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>04H</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="txt04SlaveAddr">
-            <property name="placeholderText">
-             <string>从地址</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3" colspan="2">
-           <widget class="QLineEdit" name="txt03RegNum">
-            <property name="placeholderText">
-             <string>寄存器数量</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QLineEdit" name="txt06SlaveAddr">
-            <property name="placeholderText">
-             <string>从地址</string>
             </property>
            </widget>
           </item>
@@ -528,29 +494,37 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="4">
-           <widget class="QLineEdit" name="txt03Read">
-            <property name="minimumSize">
+          <item row="3" column="0">
+           <widget class="QPushButton" name="btn04Send">
+            <property name="maximumSize">
              <size>
-              <width>0</width>
-              <height>0</height>
+              <width>50</width>
+              <height>16777215</height>
              </size>
             </property>
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
-            <property name="placeholderText">
-             <string>Read</string>
+            <property name="text">
+             <string>04H</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1" colspan="3">
-           <widget class="QLineEdit" name="txt04Read">
-            <property name="readOnly">
-             <bool>false</bool>
-            </property>
+          <item row="8" column="1">
+           <widget class="QLineEdit" name="txt06SlaveAddr">
             <property name="placeholderText">
-             <string>Read</string>
+             <string>从地址</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" colspan="2">
+           <widget class="QLineEdit" name="txt03RegNum">
+            <property name="placeholderText">
+             <string>寄存器数量</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="txt04SlaveAddr">
+            <property name="placeholderText">
+             <string>从地址</string>
             </property>
            </widget>
           </item>
@@ -568,17 +542,13 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0" colspan="5">
-           <widget class="Line" name="line_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="4" column="1" colspan="3">
+           <widget class="QLineEdit" name="txt04Read">
+            <property name="readOnly">
+             <bool>false</bool>
             </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="5">
-           <widget class="Line" name="line_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+            <property name="placeholderText">
+             <string>Read</string>
             </property>
            </widget>
           </item>
@@ -589,10 +559,33 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="3">
-           <widget class="QLineEdit" name="txt04RegNum">
+          <item row="2" column="0" colspan="5">
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0" colspan="5">
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="4">
+           <widget class="QLineEdit" name="txt03Read">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="readOnly">
+             <bool>false</bool>
+            </property>
             <property name="placeholderText">
-             <string>寄存器数量</string>
+             <string>Read</string>
             </property>
            </widget>
           </item>
@@ -648,6 +641,13 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="3">
+           <widget class="QLineEdit" name="txt04RegNum">
+            <property name="placeholderText">
+             <string>寄存器数量</string>
+            </property>
+           </widget>
+          </item>
           <item row="11" column="2">
            <widget class="QLineEdit" name="txt10RegAddr">
             <property name="placeholderText">
@@ -665,8 +665,14 @@
       <zorder>txtMessage</zorder>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="1" column="1">
      <widget class="QScrollArea" name="scrollArea">
+      <property name="minimumSize">
+       <size>
+        <width>300</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="widgetResizable">
        <bool>true</bool>
       </property>
@@ -675,140 +681,10 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>310</width>
+         <width>298</width>
          <height>440</height>
         </rect>
        </property>
-       <widget class="QLineEdit" name="txtOtherValue_4">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>90</y>
-          <width>171</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="placeholderText">
-         <string>仅需输入十六进制字符</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox">
-        <property name="geometry">
-         <rect>
-          <x>6</x>
-          <y>23</y>
-          <width>16</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="txtOtherValue_2">
-        <property name="geometry">
-         <rect>
-          <x>115</x>
-          <y>20</y>
-          <width>181</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="placeholderText">
-         <string>仅需输入十六进制字符</string>
-        </property>
-       </widget>
-       <widget class="QToolButton" name="toolButton_3">
-        <property name="geometry">
-         <rect>
-          <x>45</x>
-          <y>55</y>
-          <width>66</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-       <widget class="QToolButton" name="toolButton_4">
-        <property name="geometry">
-         <rect>
-          <x>45</x>
-          <y>90</y>
-          <width>66</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-       <widget class="QToolButton" name="toolButton_2">
-        <property name="geometry">
-         <rect>
-          <x>45</x>
-          <y>20</y>
-          <width>66</width>
-          <height>19</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="txtOtherValue_3">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>55</y>
-          <width>176</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="placeholderText">
-         <string>仅需输入十六进制字符</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox_3">
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>93</y>
-          <width>16</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox_2">
-        <property name="geometry">
-         <rect>
-          <x>6</x>
-          <y>58</y>
-          <width>16</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="geometry">
-         <rect>
-          <x>45</x>
-          <y>120</y>
-          <width>61</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="placeholderText">
-         <string>Time:ms</string>
-        </property>
-       </widget>
       </widget>
      </widget>
     </item>
@@ -835,6 +711,11 @@
   <action name="actionHelp">
    <property name="text">
     <string>帮助说明</string>
+   </property>
+  </action>
+  <action name="actionRename">
+   <property name="text">
+    <string>重命名</string>
    </property>
   </action>
  </widget>

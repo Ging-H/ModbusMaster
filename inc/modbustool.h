@@ -11,6 +11,8 @@
 #include <QTimer>
 #include <QSettings>
 #include <QCloseEvent>
+#include <QScrollArea>
+#include <QSpinBox>
 
 namespace Ui {
 class ModbusTool;
@@ -68,13 +70,17 @@ public:
         Exception06 ,
         Exception07 ,
         Exception08 ,
-
     };
+
 
 
     QByteArray rxDataBuf;
     int  rxCurrSize;
     bool  isExpand = false;
+    int   Count = 0;
+    int   lastCount = 0;
+    int   currentCount = 0;
+    bool  firstStart = true;
 
     void initComboBox_Config();
     void configPort();
@@ -88,6 +94,12 @@ public:
     void insertLogAtTime(QString msg);
     void getInitTxt();
     void exceptionHandle(ExceptionCode exception );
+    void iniSpb(QSpinBox *spb);
+    void iniBtn(QPushButton *btn);
+    void iniTxt(QLineEdit *txt);
+    void initMultiwidget();
+    void addWidgetGoup(int count);
+    void readMultiWidget();
 
 
 signals:
@@ -119,6 +131,12 @@ public slots :
     void slots_cmd06HProtocal();
 
     void slots_cmd10HProtocal();
+
+    void slots_showBtnRightClickMenu(const QPoint &pos);
+
+    void slots_clicktoSend();
+
+    void slots_singleShot();
 
 
 
@@ -164,13 +182,27 @@ private slots:
 
     void on_btnExpand_clicked();
 
+    void on_actionRename_triggered();
+
+    void on_btnPlus_clicked();
+
+    void on_btnSubtract_clicked();
+
+    void on_pushButton_clicked(bool checked);
+
+    void on_actionModbusPro_triggered();
+
 protected :
     void closeEvent(QCloseEvent *event);
 
 private:
     Ui::ModbusTool *ui;
-
+    QMenu *btnMenu;
     BaseSerialComm *currentPort;   // 端口号
+    QVector<QCheckBox *> multiCkb;
+    QVector<QSpinBox *> multiSpb;
+    QVector<QPushButton *> multiBtn;
+    QVector<QLineEdit *> multiTxt;
 
 };
 

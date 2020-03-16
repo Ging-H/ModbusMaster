@@ -1,10 +1,6 @@
 #include "modbustool.h"
 #include "ui_modbustool.h"
 #include <QMenu>
-#include <QSpacerItem>
-#include <QAbstractSpinBox>
-#include <QDir>
-#include <QDesktopServices>
 
 ModbusTool::ModbusTool(QWidget *parent) :
     QMainWindow(parent),
@@ -23,18 +19,22 @@ ModbusTool::ModbusTool(QWidget *parent) :
     connect(this, SIGNAL(signal_cmd06HProtocal()), this, SLOT(slots_cmd06HProtocal()) );
     connect(this, SIGNAL(signal_cmd10HProtocal()), this, SLOT(slots_cmd10HProtocal()) );
 
-    ui->scrollArea->setVisible(false);
     this->getInitTxt();
 
-    btnMenu = new QMenu();
-    btnMenu->addAction(ui->actionRename);
-    this->setWindowTitle("ModbusTool-Master - ing10 v1.0");
+//    QMenu *menu = new QMenu;
+//    menu->addAction(ui->actionRename);
+//    ui->btnSend->setMenu(menu);
+    connect(ui->btnSend,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(slots_showBtnRightClickMenu())  );
 }
+void ModbusTool::slots_showBtnRightClickMenu(const QPoint &pos)
+{
 
+}
 ModbusTool::~ModbusTool()
 {
     delete ui;
 }
+
 
 /*   初始化了串口设置当中的下拉列表(ComboBox) */
 void ModbusTool::initComboBox_Config()
@@ -759,6 +759,7 @@ void ModbusTool::slots_cmd10HProtocal()
     ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
 }
 
+
 /* 扩展功能 */
 /*----------------------------------------------------------------------------*/
 /**
@@ -767,175 +768,29 @@ void ModbusTool::slots_cmd10HProtocal()
 void ModbusTool::on_btnExpand_clicked()
 {
     if(!isExpand){
+        QGroupBox *newGroupBox = new QGroupBox(this);
+        newGroupBox->setTitle("模拟设备");
+        QLayout *mainLayout = ui->centralWidget->layout();
+        mainLayout->addWidget(newGroupBox);
+        newGroupBox->setMinimumWidth(300);
+        QRect geo = this->geometry();
+        geo.setWidth(geo.width() + 300);
+        this->setGeometry(geo);
+
         isExpand = true;
-        ui->scrollArea->setVisible(true);
-        if(firstStart){
-            firstStart = false;
-            this->initMultiwidget();
-        }
-        QRect geo = this->geometry();
-        this->setGeometry(geo.x(),geo.y(),geo.width()+300,geo.height() );
+
     }else{
-        ui->scrollArea->setVisible(false);
+        QLayout *mainLayout = ui->centralWidget->layout();
+        delete mainLayout->takeAt( mainLayout->count()-1 )->widget();
+        QRect geo = this->geometry();
+        geo.setWidth(geo.width() - 300);
+        this->setGeometry(geo);
+
         isExpand = false ;
-        QRect geo = this->geometry();
-        this->setGeometry(geo.x(),geo.y(),geo.width()-300,geo.height() );
     }
 }
-/**
- * @brief ModbusTool::initMultiwidget 初始化多个组件
- */
-void ModbusTool::initMultiwidget()
-{
-    QVBoxLayout *vBoxLayout = new QVBoxLayout();
-    ui->scrollArea->widget()->setLayout( vBoxLayout );
-    vBoxLayout->setSpacing(1);
-    vBoxLayout->setSpacing(2);// 垂直间隔
-    vBoxLayout->setMargin(1); // 水平间隔
-
-    vBoxLayout->addStretch();
-    if(this->lastCount != 0){
-        this->addWidgetGoup(lastCount);
-        /* 读取控件信息 */
-        this->readMultiWidget();
-    }else{
-        this->addWidgetGoup(16);
-    }
-}
-/**
- * @brief ModbusTool::readMultiWidget 从ini文件当中读取所有控件
- */
-void ModbusTool::readMultiWidget()
-{
-    QSettings settings("ModbusMaster.ini", QSettings::IniFormat);
-    settings.setIniCodec("GBK");
-    for(int i=0; i<lastCount; i++){
-        settings.beginGroup(QString("Group%1").arg(i));
-        multiCkb.at(i)->setChecked(settings.value("ckb").toBool());
-        multiSpb.at(i)->setValue(settings.value("spb").toInt());
-        multiBtn.at(i)->setText(settings.value("btn").toString());
-        multiTxt.at(i)->setText(settings.value("txt").toString());
-        settings.endGroup();
-    }
-}
-/**
- * @brief ModbusTool::addWidgetGoup 添加一组Widget
- * @param count
- */
-void ModbusTool::addWidgetGoup(int count)
-{
-    QVBoxLayout *layout = (QVBoxLayout*)ui->scrollArea->widget()->layout();
-    QLayoutItem *item = layout->takeAt(Count);
-    if( item !=NULL){
-        delete item->widget();
-        delete item;
-    }
-    for(int i=0; i<count; i++){
-        Count++;
-        QHBoxLayout *hBoxLayout = new QHBoxLayout();
-        QCheckBox *ckb = new QCheckBox();
-        QSpinBox *spb = new QSpinBox();
-        QPushButton *btn = new QPushButton();
-        QLineEdit *txt = new QLineEdit();
-        /* 记录指针,用于保存数据 */
-        multiCkb.push_back(ckb);
-        multiSpb.push_back(spb);
-        multiBtn.push_back(btn);
-        multiTxt.push_back(txt);
 
 
-        hBoxLayout->addWidget(ckb);
-        hBoxLayout->addWidget(spb);
-        hBoxLayout->addWidget(btn);
-        hBoxLayout->addWidget(txt);
-        hBoxLayout->setSpacing(3);// 水平间隔为0
-        hBoxLayout->setMargin(1); // 垂直间隔
-
-        this->iniSpb(spb);
-        this->iniBtn(btn);
-        this->iniTxt(txt);
-
-        QWidget *pWidget = new QWidget();
-        pWidget->setLayout( hBoxLayout );
-        layout->addWidget(pWidget);
-    }
-    layout->addStretch();
-}
-/**
- * @brief ModbusTool::iniSpb 初始化spb
- * @param spb
- */
-void ModbusTool::iniSpb(QSpinBox *spb)
-{
-    spb->setMinimum(0);
-    spb->setMaximum(1000000);
-    spb->setValue(1000);
-    spb->setButtonSymbols(QAbstractSpinBox::NoButtons);
-    spb->setSuffix(" ms");
-    spb->setMaximumWidth( 51 );
-}
-/**
- * @brief ModbusTool::iniBtn 初始化btn
- * @param btn
- */
-void ModbusTool::iniBtn(QPushButton *btn)
-{
-    btn->setText(QString::number( Count, 10));
-    btn->setContextMenuPolicy( Qt::CustomContextMenu);
-    connect(btn, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slots_showBtnRightClickMenu(const QPoint &)));
-    connect(btn, SIGNAL(clicked()), this, SLOT(slots_clicktoSend()));
-    btn->setMaximumWidth(66);
-}
-void ModbusTool::slots_clicktoSend()
-{
-    QPushButton *btn = qobject_cast<QPushButton*>(sender());
-    int index = multiBtn.indexOf(btn);
-    QLineEdit *txt = multiTxt.at(index);
-    QString tmp = txt->text();
-    if(tmp.isEmpty()){
-        return ;
-    }
-    tmp.remove(QRegExp ("\\s")); // delete space
-    QByteArray txbuf = QByteArray::fromHex(tmp.toLocal8Bit());
-    this->sendFrame(txbuf);
-}
-/**
- * @brief ModbusTool::iniTxt 初始化txt
- * @param txt
- */
-void ModbusTool::iniTxt(QLineEdit *txt)
-{
-    QRegExp regExp("[a-fA-F0-9 ]*"); // 匹配十六进制字符和空格
-    QRegExpValidator *reg = new QRegExpValidator(regExp,this);
-    txt->setValidator(reg);// 设定正则表达式
-}
-/**
- * @brief ModbusTool::on_pushButton_clicked 连续发送
- * @param checked
- */
-void ModbusTool::on_pushButton_clicked(bool checked)
-{
-    if(checked){
-        QTimer::singleShot(10,this,SLOT(slots_singleShot()));
-    }
-}
-void ModbusTool::slots_singleShot()
-{
-    if(!ui->pushButton->isChecked()){
-        return ;
-    }
-    quint16 time = multiSpb.at(currentCount)->value();
-    if(multiCkb.at(currentCount)->isChecked()){
-        emit multiBtn.at( currentCount )->click();
-        QTimer::singleShot(time,this,SLOT(slots_singleShot()));
-    }else{
-        QTimer::singleShot(10,this,SLOT(slots_singleShot()));
-    }
-    currentCount++;
-    if(currentCount == Count){
-        currentCount = 0;
-    }
-}
 /*------------------------------------------------------------------------*/
 
 /*************************
@@ -1002,10 +857,8 @@ void ModbusTool::closeEvent(QCloseEvent *e)
 {
     e = e;
     QSettings settings("ModbusMaster.ini", QSettings::IniFormat);
-    settings.setIniCodec("GBK");
     settings.clear();
     settings.beginGroup("QLineEdit");
-
 
     QObjectList objList = ui->groupBox_8->children();
     QLineEdit *txtEdit;
@@ -1016,20 +869,6 @@ void ModbusTool::closeEvent(QCloseEvent *e)
                 settings.setValue(txtEdit->objectName(), txtEdit->text());
         }
     }
-    settings.endGroup();
-
-    settings.beginGroup("GroupCount");
-    settings.setValue("lastCount", Count);
-    settings.endGroup();
-
-    for(int i=0; i<Count; i++){
-        settings.beginGroup(QString("Group%1").arg(i));
-        settings.setValue("ckb", multiCkb.at(i)->isChecked());
-        settings.setValue("spb", multiSpb.at(i)->value() );
-        settings.setValue("btn", multiBtn.at(i)->text());
-        settings.setValue("txt", multiTxt.at(i)->text());
-        settings.endGroup();
-    }
 }
 /**
  * @brief ModbusTool::getInitTxt 读取数据
@@ -1037,135 +876,82 @@ void ModbusTool::closeEvent(QCloseEvent *e)
 void ModbusTool::getInitTxt()
 {
     QSettings settings("ModbusMaster.ini", QSettings::IniFormat);
-    settings.setIniCodec("GBK");
-
     settings.beginGroup("QLineEdit");
     QLineEdit *txtEdit;
     QStringList keyList =  settings.childKeys();
-
     foreach (QString objName, keyList) {
         txtEdit = ui->groupBox_8->findChild< QLineEdit * >(objName);
         if(txtEdit){
            txtEdit->setText(settings.value(objName).toString());
         }
     }
-    settings.endGroup();
+}
 
-    settings.beginGroup("GroupCount");
-    this->lastCount = settings.value("lastCount").toInt();//  读取上一次的数量
-    settings.endGroup();
-}
-/**
- * @brief ModbusTool::slots_showBtnRightClickMenu  按钮右击弹出菜单
- * @param pos
- */
-void ModbusTool::slots_showBtnRightClickMenu(const QPoint &pos)
-{
-    QPushButton *btn = qobject_cast<QPushButton*>(sender());
-    QVariant ptrBtn;
-    ptrBtn.setValue(btn);
-    ui->actionRename->setData( ptrBtn );
-    btnMenu->exec( QCursor::pos());
-}
-/**
- * @brief ModbusTool::on_actionRename_triggered 重命名
- */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void ModbusTool::on_actionRename_triggered()
 {
-    QVariant ptrBtn;
-    ptrBtn = ui->actionRename->data();
-    QPushButton* btn = ptrBtn.value<QPushButton*>();
-    QDialog *renameDialog = new QDialog();
-    QLineEdit *txtName = new QLineEdit();
-    renameDialog->setWindowTitle("重命名");
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    renameDialog->setLayout(layout);
-    renameDialog->layout()->addWidget(txtName);
-    renameDialog->exec();
-    btn->setText(txtName->text());
-    renameDialog->setAttribute(Qt::WA_DeleteOnClose);
+    qDebug()<<"actionRename";
 }
-/**
- * @brief ModbusTool::on_btnPlus_clicked 添加控件
- */
-void ModbusTool::on_btnPlus_clicked()
-{
-    if(isExpand){
-        this->addWidgetGoup(8);
-    }
-}
-void ModbusTool::on_btnSubtract_clicked()
-{
-    if(isExpand){
-        if(Count > 0){
-            QLayout *layout = ui->scrollArea->widget()->layout();
-            QLayoutItem *item = layout->takeAt(Count-1);
-
-            if( item !=NULL){
-                delete item->widget();
-                delete item;
-            }
-            Count--;
-            multiCkb.removeLast();
-            multiSpb.removeLast();
-            multiBtn.removeLast();
-            multiTxt.removeLast();
-        }
-    }
-}
-/**
- * @brief ModbusTool::on_actionModbusPro_triggered 打开文档
- */
-void ModbusTool::on_actionModbusPro_triggered()
-{
-    QString path = QDir::currentPath();
-    path += "/Modbus.pdf"; // 当前路径下的.pdf文档
-    QDesktopServices::openUrl(QUrl::fromLocalFile(path));
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
