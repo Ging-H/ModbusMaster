@@ -7,7 +7,6 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QTime>
-#include <QDebug>
 #include <QTimer>
 #include <QSettings>
 #include <QCloseEvent>

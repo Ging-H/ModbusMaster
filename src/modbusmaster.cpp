@@ -793,6 +793,12 @@ void ModbusMaster::exceptionHandle(ExceptionCode exception )
  */
 void ModbusMaster::slots_cmd01HProtocal()
 {
+    quint32 checkLength = 0;
+    if(ui->rdbRTU->isChecked()){
+        checkLength = 4;
+    }else{
+        checkLength = 2;
+    }
     QString tmpStr = "LSB-> ";
     quint8 value;
     for(int i=0; i<rxFrame.byteNum; i++ ){
@@ -816,7 +822,7 @@ void ModbusMaster::slots_cmd01HProtocal()
     ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("字节数: " + QString("%1").arg(rxFrame.byteNum, 2, 10));
     ui->txtMessage->append("数据值: " + tmpStr);
-    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, checkLength, 16, QLatin1Char('0')).toUpper());
 }
 
 /**
@@ -824,6 +830,12 @@ void ModbusMaster::slots_cmd01HProtocal()
  */
 void ModbusMaster::slots_cmd03HProtocal()
 {
+    quint32 checkLength = 0;
+    if(ui->rdbRTU->isChecked()){
+        checkLength = 4;
+    }else{
+        checkLength = 2;
+    }
     QString tmpStr;
     quint16 value = 0;
     for(int i=0; i<rxFrame.byteNum; i+=2 ){
@@ -839,7 +851,7 @@ void ModbusMaster::slots_cmd03HProtocal()
     ui->txtMessage->append("寄存器数量: " + QString("%1").arg(rxFrame.regNum,  2, 10));
     ui->txtMessage->append("字节数: " + QString("%1").arg(rxFrame.byteNum, 2, 10));
     ui->txtMessage->append("数据值: " + tmpStr);
-    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, checkLength, 16, QLatin1Char('0')).toUpper());
     if(rxFrame.cmd == cmd03H){
         ui->txt03Read->setText(tmpStr);
     }else{
@@ -851,6 +863,12 @@ void ModbusMaster::slots_cmd03HProtocal()
  */
 void ModbusMaster::slots_cmd05HProtocal()
 {
+    quint32 checkLength = 0;
+    if(ui->rdbRTU->isChecked()){
+        checkLength = 4;
+    }else{
+        checkLength = 2;
+    }
     quint16 value = (rxFrame.data[0]<<8) + rxFrame.data[1];
     ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
@@ -860,19 +878,25 @@ void ModbusMaster::slots_cmd05HProtocal()
     }else{
         ui->txtMessage->append("写入线圈: OFF");
     }
-    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, checkLength, 16, QLatin1Char('0')).toUpper());
 }
 /**
  * @brief ModbusTool::slots_cmd06HProtocal 协议06H指令解析
  */
 void ModbusMaster::slots_cmd06HProtocal()
 {
+    quint32 checkLength = 0;
+    if(ui->rdbRTU->isChecked()){
+        checkLength = 4;
+    }else{
+        checkLength = 2;
+    }
     quint16 value = (rxFrame.data[0]<<8) + rxFrame.data[1];
     ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("地址: "   + QString("%1H").arg(rxFrame.regAddr,  4, 16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("数据值: " + QString("%1H").arg(value,  4, 16,QLatin1Char('0')).toUpper());
-    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, checkLength, 16, QLatin1Char('0')).toUpper());
 }
 
 /**
@@ -880,11 +904,17 @@ void ModbusMaster::slots_cmd06HProtocal()
  */
 void ModbusMaster::slots_cmd10HProtocal()
 {
+    quint32 checkLength = 0;
+    if(ui->rdbRTU->isChecked()){
+        checkLength = 4;
+    }else{
+        checkLength = 2;
+    }
     ui->txtMessage->append("从地址: " + QString("%1H").arg(rxFrame.slaveAddr,2,16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("功能码: " + QString("%1H").arg(rxFrame.cmd,2,16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("首地址: " + QString("%1H").arg(rxFrame.regAddr,  4, 16,QLatin1Char('0')).toUpper());
     ui->txtMessage->append("写入数量: " + QString("%1").arg(rxFrame.regNum,  2, 10));
-    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, 2, 16, QLatin1Char('0')).toUpper());
+    ui->txtMessage->append("校验码: " + QString("%1H").arg(rxFrame.verify, checkLength, 16, QLatin1Char('0')).toUpper());
 }
 
 /* 扩展功能 */
